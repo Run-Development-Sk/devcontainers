@@ -8,9 +8,9 @@ services:
     # must be created in the .devcontainer folder.
     ports:
       # odoo port
-      - ${ODOO_PORT_8069_MAPPING:-50030}:8069
+      - ${ODOO_PORT_8069_MAPPING:-50000}:8069
       # debugpy port
-      - ${ODOO_PORT_5678_MAPPING:-50130}:5678
+      - ${ODOO_PORT_5678_MAPPING:-50100}:5678
     depends_on:
       - db
     environment:
@@ -70,7 +70,7 @@ services:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql
 
   # see: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
   pgadmin:
@@ -84,7 +84,7 @@ services:
     # To change these ports an `.env` file with `PGADMIN_PORT_80_MAPPING=YYYYY`
     # must be created in the .devcontainer folder.
     ports:
-      - ${PGADMIN_PORT_80_MAPPING:-50230}:80
+      - ${PGADMIN_PORT_80_MAPPING:-50200}:80
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 

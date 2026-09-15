@@ -25,7 +25,7 @@ To work locally on the project in a devcontainer, do the following:
 
 - Once in VS Code in the devcontainer, run the `odoo` command in the console.
 
-- Open http://localhost:50030/ in your browser. This URL is also available in VS Code in the "Ports" tab (`CTRL P` > `view ports`) > "drinkcentrum-is-odoo odoo". Upon the first Odoo run, a configuration screen will appear to set the database name and Odoo access credentials:<br><img src="./img/odoo-create-db-screen.png" style="width:400px;"><br>Enter the same credentials (especially the database name) so the project works based on preconfigured values in [`.devcontainer/config/odoo.conf`](../.devcontainer/config/odoo.conf) and [`.devcontainer/docker-compose.yml`](../.devcontainer/docker-compose.yml). You can also select a specific language and country. The fiscal localization (taxes, etc.) will be configured according to the selected country. You can also check the box to load demo data.<br><br>NOTE: **To make Odoo database manager easily accesible** add following bookmarklet:<br>`javascript:(function(){var u=location.origin+'/web/database/manager';if(location.href===u){location.reload();}else{location.href=u;}})();`<br>Add it as a bookmark in your browser.
+- Open http://localhost:50000/ in your browser. This URL is also available in VS Code in the "Ports" tab (`CTRL P` > `view ports`) > "drinkcentrum-is-odoo odoo". Upon the first Odoo run, a configuration screen will appear to set the database name and Odoo access credentials:<br><img src="./img/odoo-create-db-screen.png" style="width:400px;"><br>Enter the same credentials (especially the database name) so the project works based on preconfigured values in [`.devcontainer/config/odoo.conf`](../.devcontainer/config/odoo.conf) and [`.devcontainer/docker-compose.yml`](../.devcontainer/docker-compose.yml). You can also select a specific language and country. The fiscal localization (taxes, etc.) will be configured according to the selected country. You can also check the box to load demo data.<br><br>NOTE: **To make Odoo database manager easily accesible** add following bookmarklet:<br>`javascript:(function(){var u=location.origin+'/web/database/manager';if(location.href===u){location.reload();}else{location.href=u;}})();`<br>Add it as a bookmark in your browser.
 
 - After the initial database creation, the login screen will appear. If you entered the credentials above, you can log in using the username `test@run.sk` and password `odoo`.
 
@@ -36,7 +36,7 @@ To work locally on the project in a devcontainer, do the following:
 To create another Odoo database, use the following procedure:
 
 - Once in VS Code in the devcontainer, run the `odoo` command in the console.
-- Open the [database manager URL](http://localhost:50030/web/database/manager).
+- Open the [database manager URL](http://localhost:50000/web/database/manager).
 - Click "Create Database" and create a new database according to the guide above. Just change the "Database Name" to, e.g., `odoo_1`.
 
 If the `odoo` command is started without explicitly specifying a database, you can switch databases when logging into Odoo.
@@ -48,7 +48,7 @@ Multiple databases can be used, for example, to keep one loaded with Odoo demo d
 
 If you messed up the database during testing and it would be best to start over, do the following:
 
-- Open the [database manager URL](http://localhost:50030/web/database/manager).
+- Open the [database manager URL](http://localhost:50000/web/database/manager).
 - Click "Delete" and enter the "Master password" (it should be set to `odoo` if you created the DB according to the guide above).
 - Recreate the database according to the guide above.
 
@@ -158,7 +158,7 @@ To connect the [Ventor PRO](https://ventor.app/) application to Odoo running on 
 
 - Your laptop/computer and mobile device must be connected to the same local network, i.e., most easily the same WiFi network.
 - Find your laptop/computer's IP address in the network. For example, using the command (Linux) `hostname -I` in the console. It will be an address like `192.168.x.x`.
-- In the Ventor mobile application, set the server address to `http://192.168.x.x:50030` (replace `x.x` with your laptop/computer's actual address, the port is the same as for accessing Odoo from the browser on your laptop/computer).
+- In the Ventor mobile application, set the server address to `http://192.168.x.x:50000` (replace `x.x` with your laptop/computer's actual address, the port is the same as for accessing Odoo from the browser on your laptop/computer).
 - If it does not work, check if the firewall is active on your laptop/computer:
   - Linux (e.g. Ubuntu): `sudo ufw status` and if it is, deactivate it using the command `sudo ufw disable`
 
