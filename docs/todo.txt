@@ -1,7 +1,10 @@
+- templates/odoo-19/ - pre-commit uprav tak aby rešpektoval všetky python requirements, ktoré už Odoo 19 má nainštalované ( https://github.com/odoo/odoo/blob/19.0/requirements.txt ), aby napríklad weerkzeug.urls nenahradzal pomocou requests lebo si myslí že weerkzeug.urls nie je nainštalované. Viď aj upravy na projekte tomkostage > vetva `19` > komit d0a00686296df017f3b33385bc36d2d0655ce50c > eslint.config.cjs + pyproject.toml. Keď som sa na drinkcentrum-is pýtal na túto problematiku tak som dostal odpovede tmp/pre-commit-odoo-requirements-*.md - tvrdia že by to malo fungovať aj bezo zmien ktoré sa urobili na tomkostage-is. Urob vyhodnotenie ich porovnania, prever to (skús na tomkostage-is odstrániť tieto konfigy a spustiť `pre-commit run --all-files`)
+- features/ai-agents/odoo-19/AGENTS.md - prenes z DCIS, Syncol IS, Tomkostage IS to čo je generické
+    - features/ai-agents/odoo-19/docs/implementation-details - pridaj
 - Ako výrazne znížiť spotrebu drahých tokenov v Claude Code: neposielať frontier modelu všetku „mechanickú“ prácu, ale delegovať ju lacnejšiemu modelu. Autor tvrdí, že pri čítaní veľkých súborov takto dosiahol v priemere približne 90 % úsporu tokenov Claude:
     - https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90
     - https://chatgpt.com/g/g-p-69ca1d43432481918d3882a0f6151712-slovenske-sumare-clankov/c/6aa0f6d7-ca98-83ed-b0ea-252e584ffae1
-- pri feature ai-agents-odoo-project-management - podľa projektu https://github.com/RunDevelopmentSk/run-ai-odoo > revízia ea5741d358c59e6ff8d8fb888faceae2826b6b78 (tretia od začiatku)
+- pridaj feature ai-agents-odoo-project-management - podľa projektu https://github.com/RunDevelopmentSk/run-ai-odoo > revízia ea5741d358c59e6ff8d8fb888faceae2826b6b78 (tretia od začiatku) a revízia 801435256ac76afa033b19ab1714973429949994 (siedma od začiatku)
 - E2E testy - prenes z drinkcentrum-is ako feature
 - inštaláciu `claude`, `codex` zakomentovať (alebo podmieniť cez nejakú env premennú) - namiesto nich sa používajú VS Code rozšírenia
 - templates/odoo-19: z projektu run-portal > pyproject.toml - pozri zmeny ktoré sa tam vytvorili 1.9.2026 (komit ~ Prenesenie kódu z pôvodného projektu robeného cez Claude Desktop) a zisti či majú zmysel preniesť to aj do všeobecného template. Zrejme súviseli s tým že v extra-addons boli umiestnené aj vendor addons. Keby bolo korektne v priečinku vendor-addons tak by k tomu nedošlo (vendor-addons sú vylúčené z pre-commitu)
@@ -60,7 +63,7 @@ x rule ktoré určí, že ak sa pýtam na riešenie/ návrh / info / ... - bez o
 - rule "krok za krokom" - až keď sa dokončí zapracovanie jedného ktoku tak sa na môj pokyn pustíme do ďalšieho
 x rule aby nepísal do komentárov vysvetlenia aktuálnych úprav a odvolával sa na predošlé prerobené riešenie. Nech komentáre píše tak akoby to bolo od začiatku implementované novým spôsobom. Nemá predsa zmysel odvolávať sa ne nejaké predošlé nevhodné/horšie/slabšie riešenie ktoré už v kóde neexistuje
 - features/ai-agents/docs/ai-agents.md - pridaj časové návestia k videotutoriálom
-- `docker-compose.yml` súbory - odstáň odtiaľ pomenované volumes vytvárané pre jednotlivých AI agentov a prenestoto do `features/ai-agents/.devcontainer/agents.md`
+- `docker-compose.yml` súbory - odstáň odtiaľ pomenované volumes vytvárané pre jednotlivých AI agentov a prenestoto do `features/ai-agents/.devcontainer/ai-agents.md`
 -! check if https://github.com/augmentcode/auggie/issues/154 is resolved and if yes then restore symlink .augment/rules back
 -! templates: add installation and removal details in `.devcontainer/<template>.md` files (e.g. regarding unique ports setting in docker-compose.yml)
 - ubuntu-noble: change so that `~/workspaces/` folder is mounted directly to local project folder.
