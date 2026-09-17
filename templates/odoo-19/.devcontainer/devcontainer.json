@@ -6,7 +6,7 @@
   "postStartCommand": "bash ./.devcontainer/post-start.sh",
   "postCreateCommand": "bash ./.devcontainer/post-create.sh",
   "remoteUser": "developer",
-  "forwardPorts": [8069, 5678, "pgadmin:80"],
+  "forwardPorts": [8069, 5678, "pgadmin:80", "mailhog:8025"],
   "portsAttributes": {
     "8069": {
       "label": "odoo"
@@ -16,6 +16,9 @@
     },
     "pgadmin:80": {
       "label": "pgadmin"
+    },
+    "mailhog:8025": {
+      "label": "mailhog"
     }
   },
   "containerEnv": {

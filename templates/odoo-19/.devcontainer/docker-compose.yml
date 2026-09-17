@@ -88,6 +88,16 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
+  mailhog:
+    image: mailhog/mailhog
+    # To change these ports an `.env` file with `MAILHOG_PORT_XX_MAPPING=YYYYY`
+    # must be created in the .devcontainer folder.
+    ports:
+      # SMTP port
+      - "${MAILHOG_PORT_1025_MAPPING:-50930}:1025"
+      # web interface/UI port
+      - "${MAILHOG_PORT_8025_MAPPING:-50830}:8025"
+
 volumes:
   odoo-data:
   odoo-developer-preserved:
