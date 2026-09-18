@@ -24,7 +24,9 @@ In short (details in the skill):
    criteria appropriate to the identified type (correctness, design, idioms, security,
    performance, error handling, readability, tests). Non-code -> evaluate correctness and
    completeness against the original request.
-5. Report remarks only, grouped by file/commit, plus an overall summary.
+5. Report remarks only, grouped by file/commit, each carrying a unique number from a single
+   continuous sequence starting at 1 that runs across all files, commits, groups, and topics,
+   and a `[Blocking]`/`[Minor]`/`[Suggestion]` severity label, plus an overall summary.
 
 Hard rule: this is **read-only** – the agent only writes remarks; it never edits, adds,
 removes, stages, unstages, or commits anything.

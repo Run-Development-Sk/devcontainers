@@ -97,13 +97,28 @@ obtained in the Input step:
 ## 5. Report remarks
 
 Output **remarks only**, grouped by file (and, for multiple commits, sub-grouped by commit).
-For each remark include: the file (and line/section if applicable), a short description of the
-issue, and why it matters. If a file/commit has no remarks, say so briefly rather than omitting
-it. End with a short overall summary of whether the change set as a whole fulfills the original
-request.
+For each remark include: its number, its severity label, the file (and line/section if
+applicable), a short description of the issue, and why it matters. If a file/commit has no
+remarks, say so briefly rather than omitting it. End with a short overall summary of whether
+the change set as a whole fulfills the original request.
 
-Do not invent a severity scale unless the user asks for one; when useful, a simple
-Blocking / Minor / Suggestion label per remark is enough.
+**Numbering**: number the remarks with a single continuous sequence starting at `1` and
+increasing by one, running across all files, commits, groups, and topics - never restart the
+count in a new group. The number is the remark's unique identifier in the follow-up
+conversation about fixing the remarks ("fix 3 and 7"), so it comes first in the remark and is
+never reused or reassigned within one report:
+
+```
+1. [Blocking] path/to/file.py:42 - <description>
+2. [Minor] path/to/other-file.md - <description>
+```
+
+Where the overall summary (or any other part of the report) refers to a remark, reference it by
+its number instead of restating it.
+
+**Severity**: every remark carries exactly one severity label, placed right after its number -
+`[Blocking]`, `[Minor]`, or `[Suggestion]`. Do not introduce a different or finer-grained scale
+unless the user asks for one.
 
 ## Hard Rules
 
