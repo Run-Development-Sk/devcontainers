@@ -39,6 +39,9 @@ repos:
         exclude: '\.devcontainer/devcontainer\.json$|\.vscode/'
       - id: check-merge-conflict
       - id: check-added-large-files
+        # Translation catalogues legitimately grow past the limit (~600 kB today). The
+        # hook is here to catch binaries added by mistake, not PO files.
+        exclude: '\.po$'
         args: ["--maxkb=1024"]
       - id: mixed-line-ending
         args: ["--fix=lf"]

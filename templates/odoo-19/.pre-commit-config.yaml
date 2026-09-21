@@ -41,6 +41,9 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files
+        # Translation catalogues legitimately grow past the limit (~600 kB today). The
+        # hook is here to catch binaries added by mistake, not PO files.
+        exclude: '^extra-addons/.*/i18n(_extra)?/.*\.po$'
         args: ["--maxkb=1024"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
