@@ -28,8 +28,12 @@ In short (details in the skill):
    continuous sequence starting at 1 that runs across all files, commits, groups, and topics,
    and a `[Blocking]`/`[Minor]`/`[Suggestion]` severity label, plus an overall summary.
 
-Hard rule: this is **read-only** – the agent only writes remarks; it never edits, adds,
+Hard rule: the review is **read-only** – the agent only writes remarks; it never edits, adds,
 removes, stages, unstages, or commits anything.
+
+Remarks are applied afterwards only on explicit request and, unless the user requests otherwise,
+one remark at a time – the next one only on the user's explicit request; applied changes are
+never staged.
 
 If the user provided an argument (change source and/or original request), narrow the
 procedure accordingly instead of asking again.

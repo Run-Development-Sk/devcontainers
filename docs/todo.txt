@@ -1,3 +1,4 @@
+x do /run.review-changes a naviazaného skillu pridaj aj to že že pokiaľ to užívateľ nepožaduje inak tak sa jednotlivé pripomienky, ktoré review navrhne, zapracovávajú jedna po druhej a k nasledujúcej pripomienke sa vždy ide na záaklade explicitné poťžiadavky človeka. A vykonané zmeny nech nepridáva do stage.
 x pridaj command a skill na časové odhady (run.estimate-time. run-estimate-time)
     - vstupom bude prompt a samozrejme aj zdrojový kód daného projektu v ktorom sa agent spúšťa
     - nech úlohu rozbuje na menšie zmysluplné celky / kroky

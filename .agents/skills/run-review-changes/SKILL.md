@@ -120,10 +120,23 @@ its number instead of restating it.
 `[Blocking]`, `[Minor]`, or `[Suggestion]`. Do not introduce a different or finer-grained scale
 unless the user asks for one.
 
+## 6. Applying remarks (follow-up)
+
+The review ends with the report. Remarks are applied only when the user explicitly asks for it
+in a follow-up prompt, and then - unless the user requests otherwise (e.g. "fix all", "fix 2
+and 5 at once"):
+
+- **one remark at a time** - apply a single remark, report what was changed, and stop,
+- **next remark only on explicit request** - never proceed to another remark on your own; wait
+  until the user explicitly asks for the next one,
+- **no staging** - leave the applied changes unstaged in the working tree (no `git add`, no
+  commit), so the user can review them via `git diff` on top of the reviewed changes.
+
 ## Hard Rules
 
-- **Read-only**: never edit, add, remove, stage, unstage, or commit anything - not the reviewed
-  files, not any other file.
+- **Read-only review**: during the review (steps 1-5) never edit, add, remove, stage, unstage,
+  or commit anything - not the reviewed files, not any other file; remarks are applied only
+  per step 6.
 - Only output findings/remarks as text - no code fixes are applied, even if the fix is obvious.
 - Do not skip the Input step - both the change source and the original request must be known
   before reviewing (ask if not already given).
