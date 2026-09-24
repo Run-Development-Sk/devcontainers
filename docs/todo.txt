@@ -1,4 +1,4 @@
--! pridaj command a skill na časové odhady (run.estimate-time. run-estimate-time)
+x pridaj command a skill na časové odhady (run.estimate-time. run-estimate-time)
     - vstupom bude prompt a samozrejme aj zdrojový kód daného projektu v ktorom sa agent spúšťa
     - nech úlohu rozbuje na menšie zmysluplné celky / kroky
     - každému celku / kroku nech pridá dva časové odhady zaokrúhlené na 0.25 h (nahor):
