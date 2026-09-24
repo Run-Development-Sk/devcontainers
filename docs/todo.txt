@@ -1,3 +1,13 @@
+-! pridaj command a skill na časové odhady (run.estimate-time. run-estimate-time)
+    - vstupom bude prompt a samozrejme aj zdrojový kód daného projektu v ktorom sa agent spúšťa
+    - nech úlohu rozbuje na menšie zmysluplné celky / kroky
+    - každému celku / kroku nech pridá dva časové odhady zaokrúhlené na 0.25 h (nahor):
+        - čas keby to robil človek sám (bez AI), časový odhad má tvar [HH.DDh]
+        - čas implementácie s použiťím AI (navádzanej / koordinovanej človekom), časový odhad má tvar [ai: HH.DDh]
+    - výsledný čas je súčtom časov jednotlivých krokov (osobitne čas človeka a osobitne čas s použiťím AI)
+    - ku každému odhadu treba urobiť pripomienku že je potrebné započítať aj čas komunikácie s klientom, analýzy, testovania, nasadenia do produkcie a niečo aj na nečakané okolnosti. Nakoľko je to možné navrhni časy aj pre tieto položky (AI čas tiež, tam kde AI nemá vplyv to bude rovnaký čas ako čas človeka)
+-! features/ai-agents-fajnwork - bude obsahovať .agents/rules a AGENTS.md prenesené (porovnané) z core-v2, perinatalis, chyzbet, (drinkcentrum, uniknihy ... ?)
+-! features/ai-agents: volumes agentov sú momentálne obsiahnuté v docker-compose.yml v templates (napr. `templates/php-7.3_mysql-5.7/.devcontainer/docker-compose.yml`) - bolo by potrebné to urobiť tak aby ich pridanie do docker-compose.yml bolo vrámci inštalačných inštrukcií v `ai-agents.md`
 - templates/odoo-19/ - pre-commit uprav tak aby rešpektoval všetky python requirements, ktoré už Odoo 19 má nainštalované ( https://github.com/odoo/odoo/blob/19.0/requirements.txt ), aby napríklad weerkzeug.urls nenahradzal pomocou requests lebo si myslí že weerkzeug.urls nie je nainštalované. Viď aj upravy na projekte tomkostage > vetva `19` > komit d0a00686296df017f3b33385bc36d2d0655ce50c > eslint.config.cjs + pyproject.toml. Keď som sa na drinkcentrum-is pýtal na túto problematiku tak som dostal odpovede tmp/pre-commit-odoo-requirements-*.md - tvrdia že by to malo fungovať aj bezo zmien ktoré sa urobili na tomkostage-is. Urob vyhodnotenie ich porovnania, prever to (skús na tomkostage-is odstrániť tieto konfigy a spustiť `pre-commit run --all-files`)
 - features/ai-agents/odoo-19/AGENTS.md - prenes z DCIS, Syncol IS, Tomkostage IS to čo je generické
     - features/ai-agents/odoo-19/docs/implementation-details - pridaj
