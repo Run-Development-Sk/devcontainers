@@ -105,7 +105,10 @@ Follow the `## Installation` section (or equivalently named instructions) step b
   template, merge that folder's contents into the project root (same reconciliation rules as
   step 5 below applies to any file it overwrites) and then delete the now-empty nested folder;
   if the project is not based on that template, or it is unclear, leave the folder in place and
-  ask the user whether to merge or delete it - do not silently drop it.
+  ask the user whether to merge or delete it - do not silently drop it,
+- every rule (`.agents/rules/*.md`) the add-on adds - including rules from a merged nested
+  folder - must be referenced in `AGENTS.md` per the DoD of the `run-add-agent-asset` skill
+  (`.agents/skills/run-add-agent-asset/SKILL.md`); add a missing reference idempotently.
 
 ## 5. Reconcile files the copy overwrote
 
@@ -134,7 +137,22 @@ modification of a tracked file, not a new file):
 Files that are **new** (untracked, no previous committed version) need no reconciliation - they
 are simply new add-on files; note them in the summary.
 
-## 6. Summary and open questions
+Placeholder entries (`<@todo:...>`) of the "Rules applicable on demand" section in `AGENTS.md`
+are not carried over into a project that has no on-demand rules - omit the section there instead
+of leaving unfilled placeholders.
+
+## 6. Align existing agent artifacts
+
+If the project has the `run-add-agent-asset` skill after the integration
+(`.agents/skills/run-add-agent-asset/SKILL.md`), bring the project's pre-existing agent
+artifacts - rules, commands, skills, and subagents, including those in agent-specific locations
+(`.claude/*`, `.augment/*`, `.codex/*`) - into line with that skill (location, naming,
+frontmatter, `AGENTS.md` registration, subagent formats). That skill is the source of truth for
+the target shape; vendor-provided artifacts keep their names as it prescribes. Update references
+to every moved or renamed artifact, and ask the user when it is unclear whether an artifact is
+project-owned or vendor-provided.
+
+## 7. Summary and open questions
 
 End with:
 
@@ -143,6 +161,9 @@ End with:
 - which pre-existing files were reconciled, and for each: what project-specific content was
   restored and what new add-on content was merged in,
 - which files are newly added by the add-on,
+- which rules were registered in `AGENTS.md`,
+- which pre-existing agent artifacts were aligned with the `run-add-agent-asset` skill, and how
+  (moved, renamed, frontmatter or `AGENTS.md` registration fixed),
 - whether a nested technology-specific folder was found, and what was done with it (merged and
   deleted, or left in place pending the user's decision),
 - any spot the skill was not confident about, as direct questions to the user,
@@ -171,4 +192,6 @@ End with:
   `features/ai-agents` add-on's target shape when integrating it into a project).
 - `.agents/skills/run-remove-devcontainer-addon/SKILL.md` - the inverse operation (uninstalling
   an add-on).
+- `.agents/skills/run-add-agent-asset/SKILL.md` - target shape of agent artifacts and their
+  `AGENTS.md` registration.
 - `.agents/rules/run.secret-safety.md`, `.agents/rules/run.language-policy.md`.

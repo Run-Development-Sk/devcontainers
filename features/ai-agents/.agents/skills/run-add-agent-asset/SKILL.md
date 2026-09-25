@@ -34,17 +34,19 @@ If it is not a new type of artifact, **new symlinks are not needed** – existin
 - content and `description` **in English**,
 - **plain file paths** – write paths as plain code spans (`docs/ai-agents.md`, `.agents/rules/run.<name>.md`), never as Markdown links (`[...](...)`) – the link target duplicates the path and does not help an AI agent,
 - **context economy** – size an artifact by when it is loaded, not by how much there is to say:
-  - **always in context** (every session, every agent): rule bodies, `AGENTS.md`, and the `description` of every skill, command, and subagent – keep these minimal and free of motivational prose or content restated elsewhere (e.g. do not repeat the `description` in the body),
+  - **always in context** (every session, every agent): always-apply rule bodies, `AGENTS.md`, and the `description` of every skill, command, and subagent – keep these minimal and free of motivational prose or content restated elsewhere (e.g. do not repeat the `description` in the body),
   - skill/subagent `description` drives activation (`agent_requested` / `model_decision`) and delegation – 2–4 lines: what it does + trigger phrases; procedure details belong in the body, which loads only on activation,
   - command `description` is not used for model activation (commands are user-invoked) – one line in the form "Entry point to the `run-<name>` skill – <what it does>",
-  - bodies of skills, commands, and subagents load only on use – completeness there costs nothing per session.
+  - bodies of on-demand rules, skills, commands, and subagents load only on use – completeness there costs nothing per session; prefer an on-demand rule (`agent_requested` / `model_decision` / `glob`) for guidance that applies only to a specific kind of work or area of the code, while guidance for everything inside a single subdirectory belongs in a nested `AGENTS.md` in that subdirectory (see `docs/ai-agents.md`).
 
 ## 3. Cookbook by type
 
 ### Rule (`.agents/rules/run.<name>.md`)
 
 - Combined frontmatter: `description` + `type:` (Auggie: `always_apply|agent_requested`, `manual` is skipped by CLI – only works in IDE extensions) + `trigger:` (Antigravity: `always_on|glob|model_decision|manual`). Unknown keys are ignored by each agent.
-- Codex has no rules folder, and Claude Code's native `.claude/rules/` is not wired into this setup -> if the `always_apply|always_on` rule should apply to them as well, add a `@.agents/rules/run.<name>.md` import to `AGENTS.md`.
+- Codex has no rules folder, and Claude Code's native `.claude/rules/` is not wired into this setup -> make the rule available to them via `AGENTS.md`:
+  - `always_apply|always_on` rule – a `@.agents/rules/run.<name>.md` import (its body is loaded into every session),
+  - `agent_requested|model_decision|glob` rule – a plain path reference without `@` (the body is read only when needed) in the form `- <area> (<scope paths>) – .agents/rules/run.<name>.md`; the parenthesized scope paths are optional (for a `glob` rule, list its `globs:`), all paths are written as code spans.
 
 ### Skill (`.agents/skills/run-<name>/SKILL.md`)
 
@@ -68,6 +70,7 @@ If it is not a new type of artifact, **new symlinks are not needed** – existin
 ## 4. Documentation and Registry Sync (DoD)
 
 - new **always-apply rule** -> add to the list of "Always applicable cross-cutting rules" in `AGENTS.md` and add a `@`-import,
+- new **on-demand rule** (`agent_requested` / `model_decision` / `glob`) -> add a plain path reference to the list of "Rules applicable on demand" in `AGENTS.md` (never a `@`-import; create the section right after "Always applicable cross-cutting rules" with the lead-in "Read the matching rule before working on:" if it does not exist yet),
 - **new type of artifact/agent requiring a new symlink** -> add a line to the symlink table **and** to the `ln -s` block in `docs/ai-agents.md`,
 - if a new command/skill was created that is an entry point to another, link them with a reference and matching names (e.g., command `/run.<name>` <-> skill `run-<name>`).
 
@@ -76,9 +79,9 @@ If it is not a new type of artifact, **new symlinks are not needed** – existin
 After creation, verify that the artifact is visible to each relevant agent:
 
 - **Auggie** – skills and subagents natively from `.agents/skills` / `.agents/agents`; commands via the `.claude/commands` compatibility fallback; rules via the materialized `.augment/rules` directory (temporary workaround in `docs/ai-agents.md` – reopen the devcontainer after editing rules),
-- **Claude Code** – commands/skills/subagents via `.claude/*` symlinks; rules only via `@`-import in `AGENTS.md`,
+- **Claude Code** – commands/skills/subagents via `.claude/*` symlinks; rules only via `AGENTS.md` (see §3 Rule),
 - **Antigravity** – rules and skills natively from `.agents/*`; does not support commands in the CLI; does not read subagents from files,
-- **Codex** – `.agents/skills` and `AGENTS.md` natively; subagents from `.codex/agents` (`.toml`) via symlink; does not support commands; rules only by reference from `AGENTS.md`.
+- **Codex** – `.agents/skills` and `AGENTS.md` natively; subagents from `.codex/agents` (`.toml`) via symlink; does not support commands; rules only via `AGENTS.md` (see §3 Rule; it does not expand `@`-imports, see `docs/ai-agents.md`).
 
 ## Related
 

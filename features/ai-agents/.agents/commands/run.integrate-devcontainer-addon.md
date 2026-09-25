@@ -17,11 +17,14 @@ In short (details in the skill):
 1. If the working tree has no pending changes, ask which add-on to integrate, fetch it from
    the source repo, and copy it into the project.
 2. Otherwise, find the `.devcontainer/<add-on>.md` descriptor among the pending changes and
-   follow its installation instructions (script hooks, `.gitignore` entries, ...).
+   follow its installation instructions (script hooks, `.gitignore` entries, ...), and register
+   any rules it adds in `AGENTS.md`.
 3. For any pre-existing project file the copy overwrote, reconcile it against the previous
    committed version: restore project-specific content the overwrite dropped, and merge in
    genuinely new add-on content instead of leaving the raw overwrite in place.
-4. Report a summary of what was integrated/reconciled, and ask about any ambiguous spots.
+4. Align pre-existing agent artifacts (rules, commands, skills, subagents) with the
+   `run-add-agent-asset` skill.
+5. Report a summary of what was integrated/reconciled, and ask about any ambiguous spots.
 
 Hard rule: never commit, stage, unstage, or otherwise change git state – this only edits
 working-tree files, and rebuilding the devcontainer is left to the user.

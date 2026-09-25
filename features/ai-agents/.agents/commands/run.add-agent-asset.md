@@ -12,7 +12,7 @@ Follow the `run-add-agent-asset` skill procedure:
 
 1. Determine the artifact type (rule / skill / command / subagent).
 2. Create file(s) in the correct location with mandatory frontmatter according to `docs/ai-agents.md` (source of truth); respect naming conventions and English language.
-3. Sync documentation/registries according to the DoD checklist in the skill (list of rules in `AGENTS.md`; new symlinks only for a new type of artifact).
+3. Sync documentation/registries according to the DoD checklist in the skill (always-apply and on-demand rules in `AGENTS.md`; new symlinks only for a new type of artifact).
 4. Verify cross-tool discovery (Auggie / Claude / Antigravity / Codex).
 
 If the user provided an argument (artifact type, name, purpose), narrow the procedure accordingly.
