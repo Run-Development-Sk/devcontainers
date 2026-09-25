@@ -94,9 +94,9 @@ services:
     # must be created in the .devcontainer folder.
     ports:
       # SMTP port
-      - "${MAILHOG_PORT_1025_MAPPING:-50930}:1025"
+      - "${MAILHOG_PORT_1025_MAPPING:-50900}:1025"
       # web interface/UI port
-      - "${MAILHOG_PORT_8025_MAPPING:-50830}:8025"
+      - "${MAILHOG_PORT_8025_MAPPING:-50800}:8025"
 
 volumes:
   odoo-data:
