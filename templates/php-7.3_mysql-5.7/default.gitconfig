@@ -1,0 +1,37 @@
+# To ensure proper git behaviour for the project include this file into
+# .git/config file. .devcontainer/post-create.sh and App::install() (in fajnwork
+# projects) do it automatically, manually use:
+#
+#   git config --local --add include.path ../default.gitconfig
+#
+# ATTENTION: Ensure that 'msgcat' command is available on your system. It is used
+# to merge .po files. On Linux it is part of gettext package. On Windows do following:
+#   1] Download and install gettext (http://gnuwin32.sourceforge.net/packages/gettext.htm)
+#   2] Gettext install path (C:\Program Files (x86)\GnuWin32\bin) add to sytem PATH variable
+#
+# ATTENTION: Ensure that 'gulp' command is available on your system under node 17
+# (if nvm is installed then git hooks launch gulp by `nvm exec 17`). It is used to
+# auto-compile .less files after each checkout and merge. For installation
+# details see comment in gulpfile.js
+#
+# ATTENTION: To set correctly project rights after cloning it on LINUX use:
+#   sudo chmod -R a+rw my_project_folder/
+# It is important to not change X rights as these are the only rights whose change
+# is considered by Git as file change (if core.fileMode is enabled).
+
+[core]
+	# see .githooks/hooks.php
+	hooksPath = .githooks
+
+# merge drivers assigned to files in .gitattributes
+[merge "keep-local"]
+	name = keep the local version
+	driver = true
+[merge "pomerge"]
+	name = merge .po files by msgcat
+	driver = msgcat --use-first %A %B -o %A
+
+# for more info see:
+# - https://git-scm.com/docs/git-config#_includes
+# - https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver
+# - https://git-scm.com/docs/githooks

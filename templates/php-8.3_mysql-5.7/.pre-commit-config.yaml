@@ -2,6 +2,10 @@
 #
 # Installation (once after clone; if using a devcontainer, it installs automatically - see devcontainer.json > "postCreateCommand"):
 #   pip install pre-commit
+#
+# The git hook is .githooks/pre-commit activated by core.hooksPath in default.gitconfig,
+# so do not run `pre-commit install` (it refuses to run when core.hooksPath is set).
+# Only if the project does not use default.gitconfig, run:
 #   pre-commit install
 #
 # Manual run for staged files:

@@ -1,0 +1,9 @@
+#!/bin/sh
+# see .githooks/hooks.php
+if command -v php > /dev/null 2>&1; then
+    php "$(dirname "$0")/hooks.php" "$(basename "$0")" "$@"
+else
+    echo "Git hook $(basename "$0") has been skipped as 'php' command is not available."
+fi
+# the exit status of post-checkout hook becomes the exit status of git checkout
+exit 0

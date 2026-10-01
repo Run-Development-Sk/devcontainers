@@ -24,8 +24,6 @@ services:
       - ${APP_PORT_3000_MAPPING:-50300}:3000
       # E.g. for `gitbook serve`
       - ${APP_PORT_4000_MAPPING:-50400}:4000
-      # E.g. for `hg serve`
-      - ${APP_PORT_8000_MAPPING:-50800}:8000
     volumes:
       # Mount project folder (`:cached` improves the performance on Mac and Windows)
       - ..:/var/www/html:cached
@@ -36,11 +34,10 @@ services:
       # If local node_modules folder does not exist, then docker will create it.
       - ../../node_modules:/var/www/node_modules:cached
       # Mount local user:
-      # - .hgrc and .gitconfig files to ensure the same user for Mercurial and Git.
+      # - .gitconfig file to ensure the same user for Git.
       # - .ssh files to allow Git to use local user SSH key for authentication.
       # ATTENTION: If this does not work for WINDOWS, then an `.env` file with `HOME=C:\path\to\user\home`
       # must be created in the .devcontainer folder.
-      - $HOME/.hgrc:/home/developer/.hgrc:ro
       - $HOME/.gitconfig:/home/developer/.gitconfig:ro
       - $HOME/.ssh:/home/developer/.ssh:ro
       # Store image user files placed under preserved folder in named volume

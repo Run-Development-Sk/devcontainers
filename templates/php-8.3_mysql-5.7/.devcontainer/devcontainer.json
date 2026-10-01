@@ -9,16 +9,13 @@
     "DOCKER_WORKDIR_LOCAL": "${localWorkspaceFolder}",
     "DOCKER_WORKDIR_LOCAL_BASENAME": "${localWorkspaceFolderBasename}"
   },
-  "forwardPorts": [80, 8000, 4000, 3000, "phpmyadmin:80"],
+  "forwardPorts": [80, 4000, 3000, "phpmyadmin:80"],
   "portsAttributes": {
     "80": {
       "label": "web"
     },
     "phpmyadmin:80": {
       "label": "phpmyadmin"
-    },
-    "8000": {
-      "label": "hg serve"
     },
     "4000": {
       "label": "gitbook serve"
@@ -30,7 +27,6 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "mrcrowl.hg",
         //rblb//"eamodio.gitlens",
         "mhutchie.git-graph",
         "bmewburn.vscode-intelephense-client",
@@ -68,7 +64,6 @@
         "extensions.verifySignature": false,
         "files.exclude": {
           "**/_book": true,
-          "**/.hg": true,
           "**/.git": true,
           "**/*.orig": true,
           "**/export": true,
@@ -77,7 +72,6 @@
         "search.useIgnoreFiles": false,
         "search.exclude": {
           "**/_book": true,
-          "**/.hg": true,
           "**/.git": true,
           "**/*.orig": true,
           "**/build": true,
@@ -90,7 +84,6 @@
           //"**/vendor": true,
         },
         // extensions settings
-        "hg.lineAnnotationEnabled": false,
         "sqltools.connections": [
           {
             "mysqlOptions": {

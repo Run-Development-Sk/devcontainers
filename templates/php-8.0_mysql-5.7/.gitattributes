@@ -1,0 +1,10 @@
+# merge drivers are defined in default.gitconfig
+css/extjsLikeForm.css merge=keep-local
+css/extjsLikeIndex.css merge=keep-local
+css/styles.css merge=keep-local
+app/modules/*/css/*.css merge=keep-local
+app/modules/*/css/libs/*.css merge=keep-local
+css/*.map merge=keep-local
+app/modules/*/css/*.map merge=keep-local
+app/modules/*/css/libs/*.map merge=keep-local
+*.po merge=pomerge
