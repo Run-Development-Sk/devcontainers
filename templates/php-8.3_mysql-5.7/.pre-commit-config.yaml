@@ -36,6 +36,9 @@ repos:
       - id: trailing-whitespace
         exclude: '\.md$'
       - id: end-of-file-fixer
+        # generated files (CSS compiled from .less, JS compiled from sources/,
+        # React bundles) are written without a final newline
+        exclude: '\.(css|js|map)$|/react/.+/build/'
       - id: check-yaml
       - id: check-json
         # devcontainer.json and .vscode/*.json are JSONC (JSON with Comments) — comments are valid
