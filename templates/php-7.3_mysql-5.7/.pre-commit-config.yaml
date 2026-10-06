@@ -40,7 +40,7 @@ repos:
       - id: check-json
         # devcontainer.json and .vscode/*.json are JSONC (JSON with Comments) — comments are valid
         # there, but the stdlib JSON parser standard-json uses rejects them.
-        exclude: '\.devcontainer/devcontainer\.json$|\.vscode/'
+        exclude: '\.devcontainer/devcontainer\.json$|\.vscode/|(^|/)tsconfig\.json$'
       - id: check-merge-conflict
       - id: check-added-large-files
         # Translation catalogues legitimately grow past the limit (~600 kB today). The
