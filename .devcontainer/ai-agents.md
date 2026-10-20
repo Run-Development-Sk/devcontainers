@@ -36,6 +36,13 @@ Add the following to the `.gitignore` file:
 .augment/rules
 ```
 
+Add the following to the `.devcontainer/.env.init` file:
+
+```sh
+# define API key for run-transcribe skill
+#TRANSCRIBE_OPENAI_API_KEY=???
+```
+
 Remove files if they exist:
 
 - .agents/agents/run.compare-solutions.md
