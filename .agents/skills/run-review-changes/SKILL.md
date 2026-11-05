@@ -30,7 +30,9 @@ request, do not ask again - otherwise ask now (can be combined into a single que
    - **branch changes** against another branch (usually `main`, using `git diff main...` or `git diff main...HEAD`).
 2. **Original request/prompt** that led to the changes (the instruction that was given to the
    AI agent whose output is being reviewed) - needed to judge correctness of non-code changes
-   and the completeness of the whole change set.
+   and the completeness of the whole change set. If the project keeps a written plan or
+   specification for the change (see `AGENTS.md`), use it as the original request and only
+   confirm with the user which file it is.
 
 ## 1. Determine the diff to review
 
