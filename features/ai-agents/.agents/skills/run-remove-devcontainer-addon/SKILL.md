@@ -18,7 +18,7 @@ Skill for reversing a devcontainer add-on integration performed via the
 ## When to use
 
 - "remove add-on", "uninstall devcontainer add-on", "remove `templates/odoo-19`/`features/ai-agents`/`features/ai-agents-speckit`/`features/ai-agents-superpowers`/... from this project", "undo devcontainer feature",
-- the entry point is also the command `/run.remove-devcontainer-addon`.
+- invoked directly as `/run-remove-devcontainer-addon` in Claude Code; Codex and Auggie use the skill natively.
 
 ## Input
 
@@ -112,8 +112,6 @@ question.
 
 ## Related
 
-- `.agents/commands/run.remove-devcontainer-addon.md` - paired command
-  `/run.remove-devcontainer-addon` (entry point to this skill).
 - `.agents/skills/run-integrate-devcontainer-addon/SKILL.md` - the inverse operation; also the
   best source for how a given add-on's integration merged project-specific content into shared
   files.

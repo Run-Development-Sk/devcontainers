@@ -18,7 +18,7 @@ subcommands); this file is the procedure around it.
 ## When to use
 
 - "transcribe recording/meeting", "prepis nahrávky/stretnutia", "prepíš záznam",
-- the entry point is also the command `/run.transcribe`.
+- invoked directly as `/run-transcribe` in Claude Code; Codex and Auggie use the skill natively.
 
 ## 1. Input
 
@@ -37,7 +37,6 @@ the output names (same identifiers as in `run-save-chat`):
 | ----------- | -------- |
 | Auggie      | `auggie` |
 | Claude Code | `claude` |
-| Antigravity | `agy`    |
 | Codex       | `codex`  |
 
 ## 2. Outputs
@@ -153,5 +152,3 @@ Work efficiently: do not draft the whole output in your reasoning first - go thr
 - Overlapping speech stays partly `[???]` - no step can separate it reliably.
 
 ## Related
-
-- `.agents/commands/run.transcribe.md` - paired command `/run.transcribe` (entry point to this skill).

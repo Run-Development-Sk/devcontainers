@@ -35,8 +35,6 @@ services:
       - app-ubuntu-vscode-global-storage:/home/ubuntu/.vscode-server/data/User/globalStorage
       # Store Claude Code config/login/settings
       - app-ubuntu-claude-code:/home/ubuntu/.claude
-      # Store Antigravity / Gemini config/login/settings
-      - app-ubuntu-gemini:/home/ubuntu/.gemini
       # Store Codex config/login/settings
       - app-ubuntu-codex:/home/ubuntu/.codex
       # Store Auggie config/login/settings
@@ -46,6 +44,5 @@ volumes:
   app-ubuntu-preserved:
   app-ubuntu-vscode-global-storage:
   app-ubuntu-claude-code:
-  app-ubuntu-gemini:
   app-ubuntu-codex:
   app-ubuntu-augment:

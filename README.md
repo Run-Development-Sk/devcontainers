@@ -3,6 +3,7 @@
 This project serves as a shared specification for devcontainers (VS Code) used in other projects as development environments for a given technology. Currently, the following technologies are covered in `templates/`:
 
 - `templates/odoo-19`
+- `templates/odoo-20`
 - `templates/php-7.3_mysql-5.7`
 - `templates/php-8.0_mysql-5.7`
 - `templates/php-8.3_mysql-5.7`
@@ -16,7 +17,7 @@ Docker images used by these devcontainers are maintained in repo https://github.
 
 The project also includes features that can be added to templates. These are contained in `features/`. Currently, the following features are available:
 
-- `features/ai-agents` - adds `claude`, `codex`, `agy`, and `auggie` CLI AI agents via a [unified configuration](docs/ai-agents.md).
+- `features/ai-agents` - adds `claude`, `codex`, and `auggie` CLI AI agents via a [unified configuration](docs/ai-agents.md).
 - `features/ai-agents-speckit` - adds [speckit tools](https://github.com/github/spec-kit) for AI agents.
 - `features/ai-agents-superpowers` - adds [superpowers tools](https://github.com/obra/superpowers) for AI agents.
 

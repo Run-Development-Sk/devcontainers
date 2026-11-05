@@ -1,7 +1,7 @@
 # AI agents
 
 Devcontainer feature [`ai-agents`](https://github.com/RunDevelopmentSk/devcontainers).
-Adds `claude`, `codex`, `agy` and `auggie` CLI AI agents in the form of a [unified configuration](../docs/ai-agents.md).
+Adds `claude`, `codex` and `auggie` CLI AI agents in the form of a [unified configuration](../docs/ai-agents.md).
 
 ## Installation
 
@@ -36,6 +36,15 @@ Add the following to the `.gitignore` file:
 .augment/rules
 ```
 
+Remove this line from the `.gitignore` file if it exists:
+
+```sh
+/.antigravitycli/
+```
+
+If `CLAUDE.md` is a symlink to `AGENTS.md`, replace it with the `CLAUDE.md` file of this feature.
+If it is already a file, keep its project-specific `## Claude Code specifics` section.
+
 Add the following to the `.devcontainer/.env.init` file:
 
 ```sh
@@ -53,6 +62,20 @@ Remove files if they exist:
 - .devcontainer/agents.md
 - .devcontainer/post-create-agents.sh, remove also mention in .devcontainer/post-create.sh
 - .devcontainer/post-start-agents.sh, remove also mention in .devcontainer/post-start.sh
+- GEMINI.md, .GEMINI.md, .agents/hooks.json (Antigravity configuration)
+- tmp/.antigravity (symlink)
+- the `odoo-developer-gemini` (or similarly named `.gemini`) volume mount and volume declaration in `.devcontainer/docker-compose.yml`
+- commands that only wrapped a skill (the skill is invoked directly as `/run-<name>`):
+  - .agents/commands/run.add-agent-asset.md
+  - .agents/commands/run.compare-agent-outputs.md
+  - .agents/commands/run.convert-to-markdown.md
+  - .agents/commands/run.estimate-time.md
+  - .agents/commands/run.integrate-devcontainer-addon.md
+  - .agents/commands/run.remove-devcontainer-addon.md
+  - .agents/commands/run.review-changes.md
+  - .agents/commands/run.save-chat.md
+  - .agents/commands/run.save-response.md
+  - .agents/commands/run.transcribe.md
 
 Rebuild the devcontainer.
 

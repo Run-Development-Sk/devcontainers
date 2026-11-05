@@ -5,8 +5,8 @@
 # Unlike Superpowers, only the official installation method is used here (no vendoring):
 # the `specify` CLI is installed via `uv tool install` (officially recommended method,
 # see docs/installation.md), then the project is initialized (`specify init --here`) and
-# an integration (see docs/reference/integrations.md) is installed for each of the 4 AI
-# agents present in this devcontainer (see docs/ai-agents.md): auggie, claude, codex, agy.
+# an integration (see docs/reference/integrations.md) is installed for each of the 3 AI
+# agents present in this devcontainer (see docs/ai-agents.md): auggie, claude, codex.
 #
 # Version to install: "latest" (default) always fetches the newest release tag; set to a
 # concrete tag (e.g. "v0.12.5") to pin a specific version instead.
@@ -37,14 +37,13 @@ else
 fi
 
 # Install the remaining integrations. `claude` and `codex` are declared "multi-install safe"
-# alongside `auggie` (see docs/reference/integrations.md), so no --force is needed. `agy`
-# (Antigravity) is NOT declared multi-install safe, so it requires --force to be installed
-# alongside the others. Errors (e.g. integration already installed) are tolerated so the
-# script stays idempotent across container rebuilds.
+# alongside `auggie` (see docs/reference/integrations.md), so no --force is needed. Errors
+# (e.g. integration already installed) are tolerated so the script stays idempotent across
+# container rebuilds.
 
 # The `claude` integration writes Claude-specific skill files (extra frontmatter fields:
 # argument-hint, user-invocable, disable-model-invocation) that differ from the generic
-# format written by `auggie`/`codex`/`agy`. The unified AI-agent configuration (see
+# format written by `auggie`/`codex`. The unified AI-agent configuration (see
 # docs/ai-agents.md) normally makes `.claude/skills` a symlink to `.agents/skills`, so
 # installing `claude` alongside the other integrations would make them overwrite each
 # other's skill files in the same physical location. To avoid this, set aside the symlink
@@ -72,7 +71,3 @@ specify integration install claude --script sh \
 echo "" && echo "Installing spec-kit integration for 'codex'..."
 specify integration install codex --script sh \
   || echo "Skipping spec-kit integration 'codex' (already installed or failed)"
-
-echo "" && echo "Installing spec-kit integration for 'agy' (--force, not multi-install safe)..."
-specify integration install agy --script sh --force \
-  || echo "Skipping spec-kit integration 'agy' (already installed or failed)"

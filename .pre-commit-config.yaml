@@ -60,7 +60,7 @@ repos:
         # some templates/ and features/ are standalone devcontainer bases with their
         # own .pre-commit-config.yaml/.prettierrc — this repo's hook must not
         # reach into them (their configs may need plugins not installed here).
-        exclude: ^templates/odoo-19/
+        exclude: ^templates/odoo-(19|20)/
       - id: prettier
         name: prettier json/yaml
         entry: prettier

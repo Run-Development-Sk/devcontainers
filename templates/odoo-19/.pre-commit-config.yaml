@@ -37,17 +37,23 @@ repos:
       - id: check-yaml
       - id: check-json
         # devcontainer.json is JSONC (JSON with Comments) — comments are valid, but standard JSON parser rejects them
-        exclude: '\.aigiscode/|\.devcontainer/devcontainer\.json$|\.vscode/'
+        exclude: '\.devcontainer/devcontainer\.json$|\.vscode/'
       - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files
-        # Translation catalogues legitimately grow past the limit (~600 kB today). The
-        # hook is here to catch binaries added by mistake, not PO files.
+        # Translation catalogues legitimately grow past the limit. The hook is here to
+        # catch binaries added by mistake, not PO files.
         exclude: '^extra-addons/.*/i18n(_extra)?/.*\.po$'
         args: ["--maxkb=1024"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
         exclude: '\.bat$|\.cmd$'
+
+  # 1b) Gitleaks — blocks commits that contain secrets (tokens, keys, passwords).
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
 
   # 2) Ruff (Python) — lint + formatting.
   # `ruff` (lint) runs BEFORE `ruff-format` because --fix can modify code (e.g. import
@@ -69,9 +75,7 @@ repos:
   # `language: system` → pylint from devcontainer (it sees Odoo environment).
   #
   # Split into two hooks so duplicate-code (R0801) is disabled only under tests/:
-  # parallel test suites (e.g. excise_release/tests/ FIFO vs AVCO vs pick-release,
-  # or the E2E RPC scenarios under tests/e2e/) intentionally share near-identical
-  # setUpClass scaffolding and helper methods.
+  # parallel test classes intentionally share near-identical setUpClass scaffolding.
   - repo: local
     hooks:
       - id: pylint
@@ -85,20 +89,10 @@ repos:
         exclude: ^extra-addons/.*/(migrations|upgrades|tests)/
       - id: pylint-tests
         name: pylint (odoo addons tests)
-        # Exceptions beyond the global disable list in pyproject.toml — patterns
-        # inherent to the pytest/E2E infrastructure that cannot be fixed, only
-        # worked around with worse code. Odoo core does not hit these: it uses
-        # TransactionCase, not pytest, and never manipulates sys.path.
-        #   redefined-outer-name  — a fixture argument always shadows the fixture name
-        #   wrong-import-position — sys.path.insert() before `from _wms_helpers import ...`
-        #   import-error          — playwright lives in tests/e2e/.venv-e2e; _wms_helpers is sys.path magic
-        #   global-statement      — pytest plugin state in odoo_e2e/conftest_plugin.py
-        entry: >-
-          pylint
-          --disable=duplicate-code,redefined-outer-name,wrong-import-position,import-error,global-statement
+        entry: pylint --disable=duplicate-code
         language: system
         types: [python]
-        files: ^(extra-addons/.*/tests/|tests/e2e/)
+        files: ^extra-addons/.*/tests/
 
   # 3) JSON Schema — GitHub Actions workflows
   - repo: https://github.com/sirosen/check-jsonschema
@@ -159,7 +153,7 @@ repos:
         # JSONC files needs no exclude: prettier parses and re-emits comments natively.
         # Only check-json (hook 1) has to skip it, since the stdlib JSON parser chokes
         # on comments.
-        files: ^(extra-addons|tools|\.github|\.devcontainer|\.prodcontainer|tests)/.*\.(json|ya?ml)$|^[^/]+\.(json|ya?ml)$
+        files: ^(extra-addons|tooling|\.github|\.devcontainer|\.prodcontainer)/.*\.(json|ya?ml)$|^[^/]+\.(json|ya?ml)$
 
   # 4b) ESLint (JS) — correctness checks for the OWL frontend that prettier cannot do
   # (undefined variables, duplicate keys/imports, unused vars, const reassignment).
@@ -189,26 +183,20 @@ repos:
         # __manifest__.py and pulls in everything the manifest references, including
         # static/src assets — so static files get checked even when not passed in.
         #
-        # xml-tag-position (new in v0.2.24) wants Odoo's attribute order (id before
-        # model on <record>). Backend data XML follows it — the 3 offenders were fixed
-        # — but OWL templates are plain HTML markup (<a>, <div>, <img>, <button>) where
-        # the rule does not apply and produced 13 false positives.
+        # xml-tag-position wants Odoo's attribute order (id before model on <record>).
+        # OWL templates are plain HTML markup (<a>, <div>, <img>, <button>) where the
+        # rule does not apply, so it is disabled.
         args:
           - --disable=xml-header-wrong, xml-field-numeric-without-eval, xml-deprecated-data-node, xml-create-user-wo-reset-password, file-not-used, xml-field-bool-without-eval, xml-id-position-first, xml-view-dangerous-replace-low-priority, xml-dangerous-qweb-replace-low-priority, xml-tag-position
 
 default_language_version:
   python: python3.12
 
-# We do not format migrations and upgrade scripts with hooks (dynamically generated)
+# Third-party code and minified assets are not ours to lint or format.
 exclude: |
   (?x)^(
-      bak-addons/.*|
       vendor-addons/.*|
       _local/.*|
-      tests/e2e/(\.venv-e2e|reports)/.*|
-      \.aigiscode/.*|
-      \.pipeline/.*|
-      screenshots/.*|
       .*\.min\.js|
       .*\.min\.css
   )$

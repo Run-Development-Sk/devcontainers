@@ -46,8 +46,6 @@ services:
       - odoo-developer-vscode-global-storage:/home/developer/.vscode-server/data/User/globalStorage
       # Store Claude Code config/login/settings
       - odoo-developer-claude-code:/home/developer/.claude
-      # Store Antigravity / Gemini config/login/settings
-      - odoo-developer-gemini:/home/developer/.gemini
       # Store Codex config/login/settings
       - odoo-developer-codex:/home/developer/.codex
       # Store Auggie config/login/settings
@@ -103,7 +101,6 @@ volumes:
   odoo-developer-preserved:
   odoo-developer-vscode-global-storage:
   odoo-developer-claude-code:
-  odoo-developer-gemini:
   odoo-developer-codex:
   odoo-developer-augment:
   db-data:

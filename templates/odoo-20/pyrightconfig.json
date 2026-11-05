@@ -1,0 +1,21 @@
+{
+  "pythonVersion": "3.12",
+  "pythonPlatform": "Linux",
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "pythonVersion": "3.12",
+      "pythonPlatform": "Linux",
+      "extraPaths": ["/usr/lib/python3/dist-packages"]
+    }
+  ],
+  "venvPath": "/usr",
+  "venv": "",
+  "typeCheckingMode": "off",
+  "reportMissingImports": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownParameterType": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownArgumentType": false,
+  "reportGeneralTypeIssues": false
+}

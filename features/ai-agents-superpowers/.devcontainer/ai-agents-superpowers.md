@@ -21,14 +21,6 @@ The `SUPERPOWERS_INSTALL` variable can have the following values:
 - `original` - the original installation of `superpowers`, as described in the documentation (i.e. as a plugin). This method does not cover the `auggie` CLI.
 - `vendor` - copying the tools from the GitHub repository into the `.agents` folder in the project. This also covers the `auggie` CLI, but it is questionable whether it is as functional as the `original` installation.
 
-For the `vendor` installation, add a `.GEMINI.md` file with the following content:
-
-```markdown
-@.agents/skills/using-superpowers/SKILL.md
-```
-
-This acts as a replacement for the missing session start hook for `agy`.
-
 Remove files if they exist:
 
 - .devcontainer/agents-superpowers.md

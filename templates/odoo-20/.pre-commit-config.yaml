@@ -1,0 +1,202 @@
+# Pre-commit hooks — automatic lint and formatting on every commit.
+#
+# Installation (once after clone; if using a devcontainer, it installs automatically - see devcontainer.json > "postCreateCommand"):
+#   pip install pre-commit
+#   pre-commit install
+#
+# Manual run for staged files:
+#   pre-commit run
+#
+# Manual run for staged files, only the hook with a given id or alias:
+#   pre-commit run prettier
+#
+# Manual run for specified files:
+#   pre-commit run --files foo.xml bar.py
+#
+# Manual run for all modified (staged + unstaged) files:
+#   pre-commit run --files $(git diff HEAD --name-only)
+#
+# Manual run for all files:
+#   pre-commit run --all-files
+#
+# Emergency bypass of hooks during commit (not recommended for regular use):
+#   git commit --no-verify
+#
+# Manual update of hooks to the latest versions:
+#   pre-commit autoupdate
+
+repos:
+  # 1) Basic generic hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.md$|\.csv$'
+      - id: end-of-file-fixer
+        exclude: '\.csv$'
+      - id: check-yaml
+      - id: check-json
+        # devcontainer.json is JSONC (JSON with Comments) — comments are valid, but standard JSON parser rejects them
+        exclude: '\.devcontainer/devcontainer\.json$|\.vscode/'
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        # Translation catalogues legitimately grow past the limit. The hook is here to
+        # catch binaries added by mistake, not PO files.
+        exclude: '^extra-addons/.*/i18n(_extra)?/.*\.po$'
+        args: ["--maxkb=1024"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+        exclude: '\.bat$|\.cmd$'
+
+  # 1b) Gitleaks — blocks commits that contain secrets (tokens, keys, passwords).
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # 2) Ruff (Python) — lint + formatting.
+  # `ruff` (lint) runs BEFORE `ruff-format` because --fix can modify code (e.g. import
+  # order). Rules are in pyproject.toml. By default, it runs only on staged files,
+  # so existing issues block only when that specific file is modified (gradual cleanup).
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.1
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^extra-addons/
+      - id: ruff-format
+        files: ^extra-addons/
+
+  # 2b) Pylint (Python) — deep semantic analysis that ruff doesn't do (duplicate-code,
+  # used-before-assignment, attribute-defined-outside-init, refactor tips). Overlap
+  # with ruff is disabled in pyproject.toml ([tool.pylint."messages control"]).
+  # Config: pyproject.toml [tool.pylint.*] — pylint finds it automatically.
+  # `language: system` → pylint from devcontainer (it sees Odoo environment).
+  #
+  # Split into two hooks so duplicate-code (R0801) is disabled only under tests/:
+  # parallel test classes intentionally share near-identical setUpClass scaffolding.
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint (odoo addons)
+        entry: pylint
+        language: system
+        types: [python]
+        files: ^extra-addons/
+        # pylint `ignore-paths` is not applied to explicitly passed files (pre-commit
+        # always passes paths), therefore migrations/upgrades are excluded directly here.
+        exclude: ^extra-addons/.*/(migrations|upgrades|tests)/
+      - id: pylint-tests
+        name: pylint (odoo addons tests)
+        entry: pylint --disable=duplicate-code
+        language: system
+        types: [python]
+        files: ^extra-addons/.*/tests/
+
+  # 3) JSON Schema — GitHub Actions workflows
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.37.4
+    hooks:
+      - id: check-github-workflows
+
+  # 4) Prettier — formatting XML/JS/MD/JSON/YAML/CSS; config in .prettierrc.cjs.
+  # repo: local + language: node — @prettier/plugin-xml plugin is loaded directly
+  # from .prettierrc.cjs via require.resolve() (same approach as OCA), so no wrapper
+  # or --plugin is needed on the CLI. mirrors-prettier is archived (deprecated).
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier odoo xml views
+        entry: prettier
+        args: [--write, --list-different, --ignore-unknown]
+        language: node
+        additional_dependencies: &prettier_deps
+          - "prettier@3.1.0"
+          - "@prettier/plugin-xml@3.4.2"
+        files: ^extra-addons/.*/(views|data|security|demo)/.*\.xml$
+        exclude: ^extra-addons/.*/views/templates\.xml$
+      - id: prettier
+        name: prettier js/scss static assets
+        entry: prettier
+        args: [--write, --list-different, --ignore-unknown]
+        language: node
+        additional_dependencies: *prettier_deps
+        # Frontend assets (.js + .css/.scss)
+        #
+        # Note the absent .xml: OWL templates (static/src/**/*.xml) are deliberately
+        # NOT formatted. They carry xml:space="preserve", so every line break prettier
+        # inserts becomes part of the rendered text.
+        # There is no option for "expand attributes but ignore width"
+        # (singleAttributePerLine is the opposite extreme — it would also split
+        # `<t t-esc="x"/>`). The hand-maintained formatting is more readable than
+        # anything prettier produces here, so these files stay out.
+        files: ^extra-addons/.*/static/.*\.(js|css|scss)$
+        exclude: ^.*\.min\.(css|js)$
+      - id: prettier
+        name: prettier markdown docs
+        alias: prettier-markdown-docs
+        entry: prettier
+        args: [--write, --list-different, --ignore-unknown]
+        language: node
+        additional_dependencies: *prettier_deps
+        files: \.md$
+      - id: prettier
+        name: prettier json/yaml (first-party)
+        entry: prettier
+        args: [--write, --list-different, --ignore-unknown]
+        language: node
+        additional_dependencies: *prettier_deps
+        # Config-style files only — .css/.scss moved to the static assets hook above,
+        # where the rest of the frontend lives.
+        #
+        # JSONC files needs no exclude: prettier parses and re-emits comments natively.
+        # Only check-json (hook 1) has to skip it, since the stdlib JSON parser chokes
+        # on comments.
+        files: ^(extra-addons|tooling|\.github|\.devcontainer|\.prodcontainer)/.*\.(json|ya?ml)$|^[^/]+\.(json|ya?ml)$
+
+  # 4b) ESLint (JS) — correctness checks for the OWL frontend that prettier cannot do
+  # (undefined variables, duplicate keys/imports, unused vars, const reassignment).
+  # Rules in eslint.config.cjs are taken from Odoo 20 CE core
+  # (addons/test_lint/tests/eslintrc), which core runs against its own JS.
+  # Formatting is left entirely to prettier — no stylistic rules here.
+  # repo: local + language: node → eslint is pinned per-hook, independent of the
+  # (much older) system-wide eslint in the devcontainer.
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint (owl frontend)
+        entry: eslint
+        args: [--config, eslint.config.cjs, --no-warn-ignored]
+        language: node
+        additional_dependencies:
+          - "eslint@9.39.5"
+        files: ^extra-addons/.*/static/src/.*\.js$
+
+  # 5) OCA odoo-pre-commit-hooks — Odoo-aware linter for XML and manifests
+  - repo: https://github.com/OCA/odoo-pre-commit-hooks
+    rev: v0.2.24
+    hooks:
+      - id: oca-checks-odoo-module
+        files: ^extra-addons/.*(\.(csv|xml)$|/__manifest__\.py$|/__openerp__\.py$)
+        # `exclude` cannot keep OWL templates out: the checker resolves a module from
+        # __manifest__.py and pulls in everything the manifest references, including
+        # static/src assets — so static files get checked even when not passed in.
+        #
+        # xml-tag-position wants Odoo's attribute order (id before model on <record>).
+        # OWL templates are plain HTML markup (<a>, <div>, <img>, <button>) where the
+        # rule does not apply, so it is disabled.
+        args:
+          - --disable=xml-header-wrong, xml-field-numeric-without-eval, xml-deprecated-data-node, xml-create-user-wo-reset-password, file-not-used, xml-field-bool-without-eval, xml-id-position-first, xml-view-dangerous-replace-low-priority, xml-dangerous-qweb-replace-low-priority, xml-tag-position
+
+default_language_version:
+  python: python3.12
+
+# Third-party code and minified assets are not ours to lint or format.
+exclude: |
+  (?x)^(
+      vendor-addons/.*|
+      _local/.*|
+      .*\.min\.js|
+      .*\.min\.css
+  )$

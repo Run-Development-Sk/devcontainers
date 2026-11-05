@@ -1,0 +1,79 @@
+
+
+---
+How to write todo:
+
+*****************************************
+NOTES ON THE MAIN TASK (~TICKET) ABC
+*****************************************
+x finish this
+- check that
+- fix the bug there
+- on the KLM page:
+    - check this
+    x finish that
+    x? how should I do this?
+        >> The client said like this...
+- translate that
+-? I really don't understand this. How should I do it?
+-! definitely don't forget this!
+-+ this was not in the original estimate
+x+ this was not in the original estimate either, but I did it
+
+-----------------------------------------------------------------
+Notes on subtask (~subtask of the ticket) or notes subsection
+-----------------------------------------------------------------
+- on the subtask I haven't finished that
+
+-----------
+Suggestions
+-----------
+- although the client didn't want this yet, the coded functionality could be extended like this, we should ask them
+
+***************************
+NOTE SYNTAX IS AS FOLLOWS
+***************************
+- task
+x completed task
+-x cancelled task
+-! important task
+x! completed important task
+-? question
+x? answered question
+    >> Answer to the question
+-?! important question
+x?! answered important question
+    >> Answer to the question
+-+ task that was not in the time estimate
+-+! tutti-brutti task that was not in the time estimate
+x+ task that was not in the time estimate but was completed
+- task with subtasks
+    - subtask
+    x completed subtask
+    -? question about the task
+    x? answered question about the task >> Answer to the question
+- note with a list whose items are not subtasks:
+    -- this is not a subtask
+    -- neither is this a subtask
+
+*********************
+MAIN TASK (~TICKET)
+*********************
+- ...
+
+------------------------------------------------------
+Subtask (~subtask of the ticket) or notes subsection
+------------------------------------------------------
+- ...
+
+-----------------------------------------
+Searching for tasks using regular expressions
+-----------------------------------------
+- unfinished tasks (including questions): ^\s*-[^\-x]
+- completed tasks (including questions):   ^\s*x\??!?
+- unfinished tasks (excluding questions):  ^\s*-[^\-x\?]
+- completed tasks (excluding questions):    ^\s*x!?[^\?]
+- cancelled tasks:                         ^\s*-x
+- unanswered questions:                    ^\s*-\?!?
+- answered questions:                      ^\s*x\?!?
+- tasks not in the time estimate:          ^\s*[\-x]\+!?

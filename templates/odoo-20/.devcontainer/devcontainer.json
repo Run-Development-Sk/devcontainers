@@ -1,0 +1,125 @@
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "odoo",
+  "workspaceFolder": "/mnt",
+  "postStartCommand": "bash ./.devcontainer/post-start.sh",
+  "postCreateCommand": "bash ./.devcontainer/post-create.sh",
+  "remoteUser": "developer",
+  "forwardPorts": [8069, 5678, "pgadmin:80", "mailhog:8025"],
+  "portsAttributes": {
+    "8069": {
+      "label": "odoo"
+    },
+    "5678": {
+      "label": "debugpy"
+    },
+    "pgadmin:80": {
+      "label": "pgadmin"
+    },
+    "mailhog:8025": {
+      "label": "mailhog"
+    }
+  },
+  "containerEnv": {
+    "DOCKER_WORKDIR_LOCAL": "${localWorkspaceFolder}",
+    "DOCKER_WORKDIR_LOCAL_BASENAME": "${localWorkspaceFolderBasename}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // The "ms-python.python" extension installs automatically
+        // "ms-python.debugpy" and "ms-python.vscode-pylance" too
+        "ms-python.python",
+        "ms-python.pylint",
+        "charliermarsh.ruff",
+        "njpwerner.autodocstring",
+
+        "trinhanhngoc.vscode-odoo", // or "Odoo.odoo"
+        "jigar-patel.OdooSnippets", // or "mstuttgart.odoo-snippets"
+
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        //rblb//"eamodio.gitlens",
+        "mhutchie.git-graph",
+        "DotJoshJohnson.xml",
+        "mechatroner.rainbow-csv",
+        "geddski.macros",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "openai.chatgpt",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        // general settings
+        "window.title": "${dirty}${localWorkspaceFolderBasename}${separator}${activeEditorShort}${separator}${profileName}${separator}${appName}",
+        "workbench.editor.openPositioning": "last",
+        "editor.renderWhitespace": "all",
+        "editor.renderControlCharacters": true,
+        "editor.wordWrap": "on",
+        // Formatting and linting runs EXCLUSIVELY via pre-commit (.pre-commit-config.yaml),
+        // so that the editor and pre-commit do not conflict with each other. The editor therefore does not format on save
+        // and does not perform any auto-fix actions.
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "never",
+          "source.organizeImports": "never"
+        },
+        "editor.wrappingStrategy": "advanced",
+        "terminal.integrated.suggest.enabled": true,
+        "[javascript]": {
+          "outline.showVariables": false
+        },
+        // - do not verify extensions signature
+        // because of bug in Docker for ARM processors on Mac
+        "extensions.verifySignature": false,
+        "search.useIgnoreFiles": false,
+        "search.exclude": {
+          "**/.git": true,
+          "**/node_modules": true
+        },
+        // extensions settings
+        "python.pythonPath": "/usr/bin/python3",
+        //"python.formatting.provider": "none",
+        // When the "trinhanhngoc.vscode-odoo" extension (Odoo IDE) is installed
+        // then Odoo IDE language server instead of Pylance. To avoid this conflict set here "None"
+        // ATTENTION: Once you will remove "trinhanhngoc.vscode-odoo" extension you should remove also
+        // this setting or change its value to "Pylance".
+        "python.languageServer": "None",
+        /*/>
+        // To tweak pylint:
+        // - https://pylint.readthedocs.io/en/stable/user_guide/configuration/index.html
+        // - https://pylint.readthedocs.io/en/stable/user_guide/checkers/features.html
+        "pylint.args": [
+            "--disable=C0111",
+            "--max-line-length=120"
+        ],
+        //*/
+        // Default formatters remain only for manual "Format Document"; auto format on save
+        // is disabled above (formatting is handled by pre-commit: prettier for non-py, ruff for .py).
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[python]": {
+          "editor.formatOnSave": false,
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        // Editor lint diagnostics are disabled — linting runs only via pre-commit
+        // (ruff check + pylint). This keeps editor and pre-commit diagnostics from diverging.
+        "ruff.lint.enable": false,
+        "pylint.enabled": false,
+        "eslint.enable": false,
+        "sqltools.connections": [
+          {
+            "previewLimit": 50,
+            "server": "db",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Project DB",
+            "database": "odoo",
+            "username": "odoo",
+            "password": "odoo"
+          }
+        ]
+      }
+    }
+  }
+}

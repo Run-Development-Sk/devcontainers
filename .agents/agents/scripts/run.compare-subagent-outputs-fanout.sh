@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # Fan-out orchestrator for the run.compare-subagent-outputs subagent.
-# Runs multiple CLI agents (claude/auggie/codex/agy) headless on the same
+# Runs multiple CLI agents (claude/auggie/codex) headless on the same
 # prompt, saves outputs to tmp/ (leaves them for inspection). auggie runs
 # read-only (--ask); claude additionally has WebFetch/WebSearch/Bash, and codex runs without
 # an internal sandbox (bypass) - read-only nature is ensured by prompt + container.
-# The prompt is passed to claude/codex/auggie via FILE/STDIN (not via argv); agy is
-# an exception (its CLI has no file/stdin input) - its prompt is passed as an argument via
-# the environment. Never include secrets in the prompt - .agents/rules/run.secret-safety.md.
+# The prompt is passed to claude/codex/auggie via FILE/STDIN (not via argv).
+# Never include secrets in the prompt - .agents/rules/run.secret-safety.md.
 # After execution, writes an overview to <out-dir>/manifest.tsv (agent, model, status, exit,
 # duration, lines) and flags suspiciously short outputs as SHORT.
 # Only stdout (pure analysis for comparison) goes to <agent>[_<model>].md; stderr
@@ -32,7 +31,7 @@ Usage:
   --out-dir       optional; default tmp/run.compare-subagent-outputs/<timestamp>
   --check         self-test: verify auth + flag validity with a cheap prompt (no fan-out)
   agent[:model]   optional; default "claude auggie" (models based on CLI configuration)
-                  supported agents: claude, auggie, codex, agy
+                  supported agents: claude, auggie, codex
 EOF
 }
 
@@ -152,24 +151,6 @@ run_agent() {
         [[ -s "$transcript" ]] && tail -n 20 "$transcript" >> "$out"
         echo "[codex failed, exit $ec]" >> "$out"
       fi
-      ;;
-    agy)
-      # agy CLI has no input prompt via file or from stdin (see `agy --help`) -> prompt
-      # and model are passed via ENVIRONMENT (AGY_PROMPT, AGY_MODEL) and only REFERENCED
-      # in the PTY command ("$AGY_PROMPT" / "$AGY_MODEL"); nothing is literally inserted into
-      # the -c string, so no content (prompt or model) is reparsed by the shell (robust against
-      # quotes/metacharacters in both). The prompt MUST NOT contain secrets.
-      # agy -p silently discards stdout on non-PTY (issue #76) -> we run via PTY (script).
-      # PTY merges agy stdout+stderr into the typescript (-> .md); sidecar .stderr here only
-      # holds errors of `script` itself. Upon failure, we append the tail of stderr to .md.
-      # --model is added by the inner shell only if AGY_MODEL is non-empty.
-      local agy_cmd='if [ -n "$AGY_MODEL" ]; then agy -p --model "$AGY_MODEL" "$AGY_PROMPT"; else agy -p "$AGY_PROMPT"; fi'
-      AGY_MODEL="$model" AGY_PROMPT="$(cat "$PROMPT_FILE")" script -qec "$agy_cmd" /dev/null > "$out" 2>"$stderr"; ec=$?
-      if [[ $ec -ne 0 ]]; then
-        [[ -s "$stderr" ]] && tail -n 20 "$stderr" >> "$out"
-        echo "[agy failed, exit $ec]" >> "$out"
-      fi
-      [[ -s "$out" ]] || echo "[agy: empty output – see issue #76 (non-TTY stdout)]" >> "$out"
       ;;
     *)
       echo "SKIP: unknown agent '$agent'." > "$out"

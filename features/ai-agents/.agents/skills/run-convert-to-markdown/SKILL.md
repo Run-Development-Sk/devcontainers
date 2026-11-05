@@ -27,7 +27,7 @@ scanner is discarded.
 ## When to use
 
 - "convert to markdown", "pdf/docx to md", "OCR a scan", "konvertuj do markdownu", "prepíš sken do md",
-- the entry point is also the command `/run.convert-to-markdown`.
+- invoked directly as `/run-convert-to-markdown` in Claude Code; Codex and Auggie use the skill natively.
 
 ## 1. Input
 
@@ -114,5 +114,3 @@ Do not modify any other file. Final message: only the written paths with their c
   reveal it.
 
 ## Related
-
-- `.agents/commands/run.convert-to-markdown.md` - paired command `/run.convert-to-markdown` (entry point to this skill).

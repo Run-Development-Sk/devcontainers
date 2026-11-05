@@ -15,7 +15,7 @@ Skill for **literally saving the last prompt and agent response** to a Markdown 
 ## When to use
 
 - "save last response", "rewrite response to .md", "save response",
-- the entry point is also the command `/run.save-response`.
+- invoked directly as `/run-save-response` in Claude Code; Codex and Auggie use the skill natively.
 
 ## Input
 
@@ -30,12 +30,11 @@ Suffix = short identifier of the running agent/CLI:
 | ----------- | -------- |
 | Auggie      | `auggie` |
 | Claude Code | `claude` |
-| Antigravity | `agy`    |
 | Codex       | `codex`  |
 
 ## 2. Determine which prompt and response to save
 
-A **save interaction** is a prompt asking to save the response or the chat – via the commands `/run.save-response`, `/run.save-chat`, via the skills `run-save-response`, `run-save-chat`, or in free text – together with every turn that belongs to it: the agent's question about the filename, the user's reply to that question, and the confirmation of the resulting path. Saving is excluded from its own output, so no turn of a save interaction is ever written to the file – including repeated or failed save attempts.
+A **save interaction** is a prompt asking to save the response or the chat – via the commands `/run-save-response`, `/run-save-chat`, via the skills `run-save-response`, `run-save-chat`, or in free text – together with every turn that belongs to it: the agent's question about the filename, the user's reply to that question, and the confirmation of the resulting path. Saving is excluded from its own output, so no turn of a save interaction is ever written to the file – including repeated or failed save attempts.
 
 Save the most recent completed prompt and response before the current save request that are not part of any save interaction. If no such pair exists, tell the user and do not create a file.
 
@@ -88,12 +87,11 @@ Write the **literal** (verbatim) content in exactly this format to the final pat
 ## Hard Rules
 
 - The prompt and response are **verbatim** – no paraphrasing, additions, or reformatting; a command/skill invocation in a prompt stays an invocation, it is never expanded into its content.
-- Save interactions (`/run.save-response`, `/run.save-chat`, their skills, and the agent's answers to them) are **never** saved.
+- Save interactions (`/run-save-response`, `/run-save-chat`, their skills, and the agent's answers to them) are **never** saved.
 - The agent suffix is **always** added.
 - Never save secrets to the file (`.agents/rules/run.secret-safety.md`).
 
 ## Related
 
-- `.agents/commands/run.save-response.md` – paired command `/run.save-response` (entry point to this skill).
 - `docs/ai-agents.md` – source of truth on unified agent configuration.
 - `.agents/rules/run.secret-safety.md` – no secrets in files or prompts.

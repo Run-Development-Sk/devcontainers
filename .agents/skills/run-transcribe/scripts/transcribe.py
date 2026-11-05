@@ -35,7 +35,7 @@ from datetime import datetime
 from pathlib import Path
 
 WORK_DIR = Path("tmp/transcribe-work")
-AGENTS = ("claude", "auggie", "codex", "agy")  # output suffixes, as in the run-save-chat skill
+AGENTS = ("claude", "auggie", "codex")  # output suffixes, as in the run-save-chat skill
 MANIFEST_NAME = "cleanup-tasks.json"  # pending cleanup tasks, in the work directory of the input PATH
 SOURCE_NAME = "source.json"  # fingerprint of the recording the work files were made from
 PARAMS_NAME = "transcribe-params.json"  # language and prompt the transcriptions were made with

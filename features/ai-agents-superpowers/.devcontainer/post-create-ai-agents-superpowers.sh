@@ -3,13 +3,13 @@
 # Superpowers (https://github.com/obra/superpowers) skills library.
 #
 # SUPERPOWERS_INSTALL controls how it gets installed:
-#   - "original" (default) installs the official plugin separately for claude, codex and agy via
+#   - "original" (default) installs the official plugin separately for claude and codex via
 #                 their own CLI plugin managers (global, per-user cache, NOT versioned in
 #                 this repo, NOT shared with auggie - auggie has no plugin manager, so it
 #                 would not get Superpowers at all with this option).
 #   - "vendor"    downloads the skills/ directory and copies it into the
-#                 unified .agents/skills/ (see docs/ai-agents.md), so all 4 agents
-#                 (auggie, claude, agy, codex) share one versioned, repo-committed copy.
+#                 unified .agents/skills/ (see docs/ai-agents.md), so all 3 agents
+#                 (auggie, claude, codex) share one versioned, repo-committed copy.
 #                 Also registers a SessionStart hook (see register_session_start_hook())
 #                 for claude, codex and auggie that simulates Superpowers' own bootstrap
 #                 injection (see .agents/hooks/superpowers-session-start.sh).
@@ -75,7 +75,6 @@ install_vendor() {
 # path works for all of them (matches the assumption already made inside the hook script itself).
 # Non-destructive: merges into each settings file's existing "hooks.SessionStart" array instead
 # of overwriting the file, and skips a target if the same hook command is already present.
-# Antigravity has no SessionStart hook.
 register_session_start_hook() {
   local repo_root hook_command
   repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -146,14 +145,6 @@ install_per_agent() {
     codex plugin add superpowers@superpowers-dev
   else
     echo "Skipping Superpowers plugin for Codex (codex CLI not found)"
-  fi
-
-  # Antigravity CLI
-  if command -v agy >/dev/null 2>&1; then
-    echo "" && echo "Installing Superpowers plugin for Antigravity..."
-    agy plugin install https://github.com/obra/superpowers
-  else
-    echo "Skipping Superpowers plugin for Antigravity (agy CLI not found)"
   fi
 
   # Auggie has no plugin/marketplace mechanism - it needs the vendored .agents/skills/

@@ -47,8 +47,6 @@ services:
       - app-developer-vscode-global-storage:/home/developer/.vscode-server/data/User/globalStorage
       # Store Claude Code config/login/settings
       - app-developer-claude-code:/home/developer/.claude
-      # Store Antigravity / Gemini config/login/settings
-      - app-developer-gemini:/home/developer/.gemini
       # Store Codex config/login/settings
       - app-developer-codex:/home/developer/.codex
       # Store Auggie config/login/settings
@@ -100,7 +98,6 @@ volumes:
   app-developer-preserved:
   app-developer-vscode-global-storage:
   app-developer-claude-code:
-  app-developer-gemini:
   app-developer-codex:
   app-developer-augment:
   mysql_data:

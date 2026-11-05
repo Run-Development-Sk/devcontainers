@@ -9,17 +9,12 @@
 line-length = 120
 target-version = "py312"
 # pre-commit passes files explicitly; without force-exclude ruff would ignore
-# extend-exclude (migrations/upgrades/e2e would still be linted/formatted).
+# extend-exclude (migrations/upgrades would still be linted/formatted).
 force-exclude = true
 extend-exclude = [
     "extra-addons/*/migrations",
     "extra-addons/*/upgrades",
-    "bak-addons",
     "_local",
-    "tests/e2e",
-    ".aigiscode",
-    ".pipeline",
-    "screenshots",
 ]
 
 [tool.ruff.lint]
@@ -71,7 +66,7 @@ ignore = [
 "**/upgrades/**/*.py" = ["F", "E", "B"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["odoo", "odoo_e2e"]
+known-first-party = ["odoo"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.ruff.format]
@@ -107,10 +102,6 @@ reports = false
 score = false
 # Inter-run results cache
 persistent = true
-# tests/e2e/conftest.py inserts this dir into sys.path at pytest runtime (odoo_e2e/ is
-# vendored there, not pip-installed) — pylint needs the same to resolve `odoo_e2e.*` imports.
-# Assumes pylint runs from the repo root (same assumption as the `files:` patterns below).
-init-hook = 'import sys; sys.path.insert(0, "tests/e2e")'
 
 [tool.pylint."messages control"]
 # Odoo is dynamic (fields, env, models…) — Odoo-friendly set of disables.

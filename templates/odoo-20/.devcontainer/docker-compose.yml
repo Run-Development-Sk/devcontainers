@@ -1,0 +1,107 @@
+services:
+  odoo:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.dev-odoo_20.0-20261102
+    image: developmentrunsk/dev-odoo:20.0-20261102
+    # To change these ports an `.env` file with `ODOO_PORT_XX_MAPPING=YYYYY`
+    # must be created in the .devcontainer folder.
+    ports:
+      # odoo port
+      - ${ODOO_PORT_8069_MAPPING:-50000}:8069
+      # debugpy port
+      - ${ODOO_PORT_5678_MAPPING:-50100}:5678
+    depends_on:
+      - db
+    environment:
+      - TZ=${TZ:-Europe/Bratislava}
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      # ATTENTION: Mapping /var/lib/odoo to some local folder does not work
+      - odoo-data:/var/lib/odoo
+      # Map whole project folder to /mnt to allow access to all project files
+      # even in devcontainer ...
+      - ..:/mnt
+      # ... and then map also /mnt/extra-addons separatelly to avoid creation of anonymous (unnamed) volume
+      # which would be created because /mnt/extra-addons is mentioned in VOLUME clause
+      # in https://github.com/odoo/docker/blob/master/20.0/Dockerfile
+      - ../extra-addons:/mnt/extra-addons
+      - ./config:/etc/odoo
+      # Mount other shared local folders if needed
+      #- ../../my-project:/mnt/_shared/my-project:cached
+      #- $HOME/Documents:/mnt/_shared/Documents:cached
+      # Mount local user:
+      # - .gitconfig files to ensure the same user for Git.
+      # - .ssh files to allow Git to use local user SSH key for authentication.
+      # ATTENTION: If this does not work for WINDOWS, then an `.env` file with `HOME=C:\path\to\user\home`
+      # must be created in the .devcontainer folder.
+      - $HOME/.gitconfig:/home/developer/.gitconfig
+      - $HOME/.ssh:/home/developer/.ssh:ro
+      # Store image user files placed under preserved folder in named volume
+      - odoo-developer-preserved:/home/developer/preserved
+      # Store VS Code global storage data in named volume
+      # to preserve them even after the container is rebuild
+      - odoo-developer-vscode-global-storage:/home/developer/.vscode-server/data/User/globalStorage
+      # Store Claude Code config/login/settings
+      - odoo-developer-claude-code:/home/developer/.claude
+      # Store Codex config/login/settings
+      - odoo-developer-codex:/home/developer/.codex
+      # Store Auggie config/login/settings
+      - odoo-developer-augment:/home/developer/.augment
+    extra_hosts:
+      # Map `host.docker.internal` to the host machine so that it is accesible
+      # from inside docker container like http://host.docker.internal
+      # ATTENTION: Do not use `localhost:host-gateway` as `localhost` is already
+      # used internally in docker container.
+      - host.docker.internal:host-gateway
+      # Map `my-local-domain` to the host machine so that it is accesible
+      # from inside docker container like http://my-local-domain
+      #- my-local-domain:host-gateway
+
+  db:
+    image: postgres:16
+    environment:
+      - TZ=${TZ:-Europe/Bratislava}
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - db-data:/var/lib/postgresql
+
+  # see: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+  pgadmin:
+    image: dpage/pgadmin4:8.14
+    depends_on:
+      - db
+    environment:
+      - TZ=${TZ:-Europe/Bratislava}
+      - PGADMIN_DEFAULT_EMAIL=test@run.sk
+      - PGADMIN_DEFAULT_PASSWORD=odoo
+    # To change these ports an `.env` file with `PGADMIN_PORT_80_MAPPING=YYYYY`
+    # must be created in the .devcontainer folder.
+    ports:
+      - ${PGADMIN_PORT_80_MAPPING:-50200}:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  mailhog:
+    image: mailhog/mailhog
+    # To change these ports an `.env` file with `MAILHOG_PORT_XX_MAPPING=YYYYY`
+    # must be created in the .devcontainer folder.
+    ports:
+      # SMTP port
+      - "${MAILHOG_PORT_1025_MAPPING:-50900}:1025"
+      # web interface/UI port
+      - "${MAILHOG_PORT_8025_MAPPING:-50800}:8025"
+
+volumes:
+  odoo-data:
+  odoo-developer-preserved:
+  odoo-developer-vscode-global-storage:
+  odoo-developer-claude-code:
+  odoo-developer-codex:
+  odoo-developer-augment:
+  db-data:
+  pgadmin-data:

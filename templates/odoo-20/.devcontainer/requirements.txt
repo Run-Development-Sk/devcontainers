@@ -1,0 +1,6 @@
+# Installed by .devcontainer/devcontainer.json > "postCreateCommand"
+
+pytest-odoo
+# lint tools — versions aligned with .pre-commit-config.yaml (ruff rev) / editor
+ruff==0.7.4
+pylint==3.3.*

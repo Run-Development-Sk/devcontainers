@@ -20,7 +20,7 @@ and reconciles any project file the raw copy overwrote so project-specific conte
 ## When to use
 
 - "integrate add-on", "add devcontainer add-on", "integrate `templates/odoo-19`/`features/ai-agents`/`features/ai-agents-speckit`/`features/ai-agents-superpowers`/... into this project", "apply devcontainer feature", "wire in the copied add-on",
-- the entry point is also the command `/run.integrate-devcontainer-addon`.
+- invoked directly as `/run-integrate-devcontainer-addon` in Claude Code; Codex and Auggie use the skill natively.
 
 ## Add-on shape (context)
 
@@ -186,8 +186,6 @@ End with:
 
 ## Related
 
-- `.agents/commands/run.integrate-devcontainer-addon.md` - paired command
-  `/run.integrate-devcontainer-addon` (entry point to this skill).
 - `docs/ai-agents.md` - source of truth on this project's own unified agent configuration (the
   `features/ai-agents` add-on's target shape when integrating it into a project).
 - `.agents/skills/run-remove-devcontainer-addon/SKILL.md` - the inverse operation (uninstalling

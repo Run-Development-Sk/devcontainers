@@ -5,7 +5,6 @@
 # Project
 #
 /.devcontainer/.env
-/.antigravitycli/
 Project DB.session.sql
 /tmp/*
 !/tmp/.gitkeep

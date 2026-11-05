@@ -8,7 +8,6 @@
 /.devcontainer/.env
 /.prodcontainer/build.log
 /.prodcontainer/.env
-/.antigravitycli/
 odoo.log
 Project DB.session.sql
 /odoo-sources
@@ -20,11 +19,6 @@ all.pot
 /_shared/
 /export/
 *.log
-
-#
-# Debug
-#
-#extra-addons/run_wms/data/stock_data.bak.xml
 
 #
 # Misc
@@ -136,13 +130,6 @@ fabric.properties
 #
 # See https://github.com/github/gitignore/blob/main/Python.gitignore (partial)
 #
-
-# E2E test outputs (generated locally, don't commit)
-tests/e2e/reports/
-tests/e2e/.state*.json
-tests/e2e/.pytest_cache/
-tests/e2e/.venv-e2e/
-tests/_archive/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

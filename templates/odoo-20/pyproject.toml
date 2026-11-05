@@ -1,0 +1,238 @@
+# Project tool configuration.
+#
+# ruff  — fast surface lint + formatter (https://docs.astral.sh/ruff/)
+# pylint — deep semantic analysis; covers what ruff cannot do
+#          (duplicate-code, used-before-assignment, attribute-defined-outside-init, …)
+
+[tool.ruff]
+# Odoo has longer lines — domain expressions, SQL, computed field bodies.
+line-length = 120
+target-version = "py312"
+# pre-commit passes files explicitly; without force-exclude ruff would ignore
+# extend-exclude (migrations/upgrades would still be linted/formatted).
+force-exclude = true
+extend-exclude = [
+    "extra-addons/*/migrations",
+    "extra-addons/*/upgrades",
+    "_local",
+]
+
+[tool.ruff.lint]
+# Conservative set — we want upgrade-friendly, not a revolution.
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (unused imports/vars, undefined names)
+    "W",   # pycodestyle warnings
+    "I",   # isort (import order)
+    "B",   # flake8-bugbear (likely bugs)
+    "UP",  # pyupgrade (modern Python idioms)
+    "C4",  # comprehensions
+    "PIE", # misc lints
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    # Odoo specifics that cannot be "fixed":
+    "E501",   # line too long — Odoo domains and long SQL strings
+    "B008",   # function call in default arg — Odoo uses fields.Char(default=lambda...)
+    "B904",   # raise ... from err — Odoo UserError does not make sense to chain
+    "UP007",  # `Optional[X]` → `X | None` — Odoo inherently has dict types where UP007 is noise
+    "UP009",  # `# coding: utf-8` shebang — Odoo legacy in older modules, we don't refactor it
+    "RUF012", # mutable class attrs — Odoo _columns / fields style
+    # concat instead of unpacking — Odoo 20 CE core has 212x `) + [` (e.g.
+    # `super()._commercial_fields() + [...]` in l10n_ar, l10n_ph, l10n_my_edi)
+    # vs 43x `[*a, b]`; our code follows the core idiom
+    "RUF005",
+    # Slovak strings and comments — diacritics trigger:
+    "RUF001", # ambiguous unicode in string (false-positive on ž/š/č/ť/...)
+    "RUF002", # ambiguous unicode in docstring
+    "RUF003", # ambiguous unicode in comment
+    # Style we do not want to enforce:
+    "E731",   # lambda assignment (due to onchange/default callbacks)
+    "E741",   # ambiguous name `l` — `filtered(lambda l: ...)` is the core idiom
+              # (625 occurrences of `lambda l:` in Odoo 20 CE addons)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Manifest files are dict, not code:
+"__manifest__.py" = ["B018", "F401"]
+# Odoo __init__.py must re-export `controllers`, `models`, etc. — F401 would report "unused".
+# I001 (isort) is off because import order in Odoo is SEMANTIC, not cosmetic: Odoo builds the
+# registry in import order, so a mixin must be imported before the models that _inherit it.
+"extra-addons/**/__init__.py" = ["F401", "I001"]
+# Tests can have long strings + assert helpers + fixture re-imports:
+"tests/**/*.py" = ["B011", "F401", "F811"]
+# Migrations have dynamically generated code:
+"**/migrations/**/*.py" = ["F", "E", "B"]
+"**/upgrades/**/*.py" = ["F", "E", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["odoo"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.format]
+# ruff format is drop-in replacement for black (same formatting).
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = false
+
+# =============================================================================
+# Pylint — deep semantic analysis
+# Docs: https://pylint.readthedocs.io/en/stable/user_guide/configuration/
+# =============================================================================
+
+[tool.pylint.main]
+# Parallel run (0 = automatically according to the number of CPU cores)
+jobs = 0
+# Directories that pylint skips
+ignore = [".git", "__pycache__", ".venv", "venv", "build", "dist"]
+ignore-patterns = [
+    "^\\.tox$",
+    "^\\.mypy_cache$",
+    "^\\.pytest_cache$",
+    "^node_modules$",
+    "^__manifest__\\.py$",
+]
+# Migrations and upgrades are dynamically generated — same logic as ruff extend-exclude
+ignore-paths = [
+    ".*/migrations/.*",
+    ".*/upgrades/.*",
+]
+# Reports off — only errors/warnings (suitable for CI and pre-commit)
+reports = false
+score = false
+# Inter-run results cache
+persistent = true
+
+[tool.pylint."messages control"]
+# Odoo is dynamic (fields, env, models…) — Odoo-friendly set of disables.
+disable = [
+    # Often redundant in Odoo module repos
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    # Odoo methods must have "self" even if unused, or the API dictates the signature
+    "unused-argument",
+    # Odoo style: many short names (id, ids, cr, uid, ctx)
+    "invalid-name",
+    # Odoo has many attributes/fields → false positives
+    "too-few-public-methods",
+    "too-many-public-methods",
+    "too-many-ancestors",
+    # ORM methods can be large (create/write/action_*) — track with review, not pylint
+    "too-many-locals",
+    "too-many-branches",
+    "too-many-statements",
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-return-statements",
+    # Controllers or modules with multiple endpoints tend to be long—monitor them via code reviews, not Pylint.
+    "too-many-lines",
+    # Odoo: Methods prefixed with `_` follow the "private" convention (e.g., `bus._sendone`), not the Python "protected" convention.
+    "protected-access",
+    # Odoo controllers commonly use lazy imports within methods (markupsafe, reportlab…).
+    "import-outside-toplevel",
+    # Odoo sometimes uses broad exceptions (e.g., during integrations)
+    "broad-exception-caught",
+    # Some pylint versions are hyper-strict with f-string and logging
+    "logging-fstring-interpolation",
+    # Odoo imports a lot of things in __init__.py / __manifest__ context
+    "wrong-import-order",
+    # https://pylint.readthedocs.io/en/stable/user_guide/messages/messages_overview.html
+    "line-too-long",
+    # Odoo has import cycles in the __init__.py tree
+    "cyclic-import",
+    # Odoo dynamically creates attributes via env, fields, etc.
+    "no-member",
+    # Odoo BaseModel has abstract methods that we don't always overwrite
+    "abstract-method",
+
+    # --- Odoo ORM: assigning a field is not a Python attribute ---
+    # `self.<field> = ...` inside @api.onchange is an ORM write, but pylint reads it
+    # as an attribute defined outside __init__. Odoo core does this routinely
+    # (sale/models/sale_order.py:886,913,917,922; sale/wizard/res_config_settings.py:97,101,106).
+    "attribute-defined-outside-init",  # W0201
+    "access-member-before-definition", # E0203
+
+    # --- Implicit string concatenation is the Odoo core convention ---
+    # Used throughout core for multi-line messages and help texts
+    # (stock/models/stock_rule.py:84, stock/models/stock_picking.py:137,402,584);
+    # explicit `+` between literals does not occur in core at all.
+    "implicit-str-concat",             # W1404
+
+    # --- Refactor hints that Odoo does not enforce ---
+    # Odoo runs pylint on its own code with `--disable=all`, enabling only
+    # used-before-assignment, undefined-variable, eval-used, unreachable and
+    # function-redefined (plus its own checkers) — see addons/test_lint/tests/test_pylint.py.
+    # The whole R category is out of scope.
+    "chained-comparison",              # R1716
+    "no-else-return",                  # R1705
+    "too-many-nested-blocks",          # R1702
+    "superfluous-parens",              # C0325
+
+    # --- Overlap with ruff (pyproject.toml select: E,F,W,I,B,UP,C4,PIE) ---
+    # These checks are done by ruff check — we leave them exclusively to it,
+    # so they do not appear twice.
+    "unused-import",                  # ruff F401
+    "unused-variable",                # ruff F841
+    "undefined-variable",             # ruff F821
+    "unused-wildcard-import",         # ruff F405
+    "wildcard-import",                # ruff F403
+    "reimported",                     # ruff F811
+    "dangerous-default-value",        # ruff B006
+    "consider-using-f-string",        # ruff UP032
+    "super-with-arguments",           # ruff UP008
+    "unnecessary-comprehension",      # ruff C4
+    "unnecessary-pass",               # ruff PIE790
+    "pointless-statement",            # ruff B018
+    "f-string-without-interpolation", # ruff F541
+    "trailing-newlines",              # ruff W391
+    "missing-final-newline",          # ruff W292 / end-of-file-fixer
+    "unnecessary-semicolon",          # ruff E702/E703
+    "bad-indentation",                # ruff E111 + ruff-format
+    "multiple-statements",            # ruff E701
+]
+
+[tool.pylint.typecheck]
+# Key to Odoo 20: the `odoo` module is not a classic package → import analysis might fail.
+ignored-modules = ["odoo"]
+# Tolerate dynamically generated members (fields.*, api.*, models.*, _ etc.)
+generated-members = [
+    "odoo.*",
+    "openerp.*",
+    "models.*",
+    "fields.*",
+    "api.*",
+]
+
+[tool.pylint.format]
+# Odoo has longer lines (domains, SQL, long strings) — aligned with ruff line-length
+max-line-length = 120
+
+[tool.pylint.design]
+max-args = 10
+max-attributes = 20
+max-locals = 25
+max-branches = 20
+max-statements = 80
+
+[tool.pylint.basic]
+# Allowed short names typical for Odoo / Python
+good-names = ["i", "j", "k", "ex", "pk", "id", "ids", "cr", "uid", "ctx", "env", "_", "x", "y"]
+# Ignore "dummy" variables
+dummy-variables-rgx = "^(_|unused_|dummy_)"
+
+[tool.pylint.similarities]
+# Duplicate-code detection — this is a unique capability of pylint (ruff cannot do this)
+min-similarity-lines = 8
+ignore-imports = true
+ignore-signatures = true
+ignore-comments = true
+ignore-docstrings = true
+
+[tool.pylint.variables]
+# Odoo translations: '_' is standard, let pylint not report "undefined"
+additional-builtins = ["_"]
+
+[tool.pylint.logging]
+# Odoo uses logging.getLogger(__name__)
+logging-modules = ["logging"]

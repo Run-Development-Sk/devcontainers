@@ -24,19 +24,6 @@ fi
 curl -fsSL https://claude.ai/install.sh | bash
 echo "Claude Code CLI (claude): $(claude --version || true) installed"
 
-# install Antigravity CLI
-echo "" && echo "Installing Antigravity CLI..."
-# - fix ownership of volume-mounted dir (docker-compose.yml creates it as root if not pre-existing in image)
-sudo chown "$CURRENT_USER:$CURRENT_USER" "$HOME/.gemini"
-# - install
-curl -fsSL https://antigravity.google/cli/install.sh | bash
-echo "Antigravity CLI (agy): $(agy --version || true) installed"
-# - ensure brain directory exists and create symlink to project tmp folder
-mkdir -p "$HOME/.gemini/antigravity-cli/brain"
-if [ ! -L "tmp/.antigravity" ] && [ ! -e "tmp/.antigravity" ]; then
-  ln -s "$HOME/.gemini/antigravity-cli/brain" "tmp/.antigravity"
-fi
-
 # install Codex CLI
 echo "" && echo "Installing Codex CLI..."
 # - fix ownership of volume-mounted dir (docker-compose.yml creates it as root if not pre-existing in image)

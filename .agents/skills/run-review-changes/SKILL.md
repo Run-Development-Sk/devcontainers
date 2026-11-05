@@ -17,7 +17,7 @@ anything.
 ## When to use
 
 - "review changes", "changes review", "revise the changes", "review staged files", "review commit `<hash>`", "review branch changes against main", "review branch", "PR review", "review PR",
-- the entry point is also the command `/run.review-changes`.
+- invoked directly as `/run-review-changes` in Claude Code; Codex and Auggie use the skill natively.
 
 ## Input
 
@@ -145,7 +145,5 @@ and 5 at once"):
 
 ## Related
 
-- `.agents/commands/run.review-changes.md` - paired command `/run.review-changes` (entry point
-  to this skill).
 - `docs/ai-agents.md` - source of truth on unified agent configuration.
 - `.agents/rules/run.secret-safety.md` - no secrets in reports.

@@ -1,13 +1,8 @@
----
-type: always_apply
-trigger: always_on
----
-
 # Instructions for AI agents
 
-This file is a **shared source of truth** for all AI agents in the project
-(Auggie, Claude Code, Antigravity, Codex). Auggie, Antigravity
-and Codex read it natively; Claude Code reads it via the symlink `CLAUDE.md → AGENTS.md`.
+This file is a **shared source of truth** for the AI agents in the project
+(Claude Code, Codex, Auggie). Codex and Auggie read it natively; Claude Code reads it
+through `CLAUDE.md`, which imports it.
 
 Configuration details of individual agents and the unified structure are in
 `docs/ai-agents.md`.

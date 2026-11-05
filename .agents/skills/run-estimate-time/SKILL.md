@@ -10,12 +10,12 @@ description: >-
 # run-estimate-time
 
 Skill for a **read-only** time estimate of a task: the agent only answers in chat, never edits,
-creates, or commits anything. To keep the estimate, use `/run.save-response`.
+creates, or commits anything. To keep the estimate, use `/run-save-response`.
 
 ## When to use
 
 - "estimate time", "time estimate", "how long will it take", "odhad času", "koľko to bude trvať", "cenová ponuka",
-- the entry point is also the command `/run.estimate-time`.
+- invoked directly as `/run-estimate-time` in Claude Code; Codex and Auggie use the skill natively.
 
 ## Definitions
 
@@ -145,7 +145,7 @@ Implementation subtotal: 6.5h ai:2.75h
 ```
 
 End with a one-line note: for an important quote it is worth running this skill in an
-independent agent and comparing both estimates with `/run.compare-agent-outputs`.
+independent agent and comparing both estimates with `/run-compare-agent-outputs`.
 
 ## Hard Rules
 
@@ -155,7 +155,5 @@ independent agent and comparing both estimates with `/run.compare-agent-outputs`
 
 ## Related
 
-- `.agents/commands/run.estimate-time.md` - paired command `/run.estimate-time` (entry point to
-  this skill).
 - `.agents/skills/run-review-changes/` - AI-assisted code review assumed by the Code review item.
 - `.agents/skills/run-compare-agent-outputs/` - comparison of independent estimates.
